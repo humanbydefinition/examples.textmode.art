@@ -8,8 +8,10 @@
 	"author": "humanbydefinition",
 	"scripts": {
 		"prepare:sources": "node scripts/prepare-sources.mjs",
-		"sync": "node scripts/sync.mjs",
-		"sync:ci": "TEXTMODE_EXAMPLES_SOURCE_ROOT=.sources TEXTMODE_SYNC_STRICT=1 node scripts/sync.mjs",
+		"sync": "node scripts/sync-latest.mjs",
+		"sync:local": "node scripts/sync.mjs",
+		"sync:ci": "node scripts/sync-latest.mjs",
+		"sync:prepared": "TEXTMODE_EXAMPLES_SOURCE_ROOT=.sources TEXTMODE_SYNC_STRICT=1 node scripts/sync.mjs",
 		"dev": "python3 -m http.server 5180 -d public",
 		"format": "prettier --write .",
 		"check:format": "prettier --check .",

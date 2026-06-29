@@ -26,7 +26,6 @@ jobs:
                   node-version: 24
                   cache: npm
             - run: npm ci
-            - run: npm run prepare:sources
             - run: npm run sync:ci
             - run: npm run check
             - name: Commit generated public files

@@ -7,22 +7,35 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PUBLIC = path.join(ROOT, 'public');
 const LIBRARIES_PATH = path.join(ROOT, 'libraries.json');
 const SOURCE_ROOT = path.resolve(process.env.TEXTMODE_EXAMPLES_SOURCE_ROOT || path.join(ROOT, '.sources'));
+const targetLib = process.argv[2];
 
 const registry = JSON.parse(fs.readFileSync(LIBRARIES_PATH, 'utf8'));
-const metadata = {
-	schemaVersion: 1,
-	libraries: [],
-};
+const metadataPath = path.join(PUBLIC, 'source-metadata.json');
+const metadata =
+	targetLib && fs.existsSync(metadataPath)
+		? JSON.parse(fs.readFileSync(metadataPath, 'utf8'))
+		: {
+				schemaVersion: 1,
+				libraries: [],
+			};
+const prepared = new Map(metadata.libraries.map((entry) => [entry.name, entry]));
+const libraries = registry.libraries.filter((lib) => !targetLib || lib.name === targetLib || lib.folder === targetLib);
+
+if (targetLib && libraries.length === 0) {
+	fail(`No library matched target "${targetLib}".`);
+}
 
 fs.mkdirSync(SOURCE_ROOT, { recursive: true });
 fs.mkdirSync(PUBLIC, { recursive: true });
 
-for (const lib of registry.libraries) {
+for (const lib of libraries) {
 	prepareLibrary(lib);
 }
 
-fs.writeFileSync(path.join(PUBLIC, 'source-metadata.json'), `${JSON.stringify(metadata, null, '\t')}\n`, 'utf8');
-console.log(`\nWrote ${path.relative(ROOT, path.join(PUBLIC, 'source-metadata.json'))}`);
+metadata.libraries = registry.libraries.filter((lib) => prepared.has(lib.name)).map((lib) => prepared.get(lib.name));
+
+fs.writeFileSync(metadataPath, `${JSON.stringify(metadata, null, '\t')}\n`, 'utf8');
+console.log(`\nWrote ${path.relative(ROOT, metadataPath)}`);
 
 function prepareLibrary(lib) {
 	const source = lib.source || {};
@@ -64,7 +77,7 @@ function prepareLibrary(lib) {
 		fail(`${lib.name}: expected bundle missing at ${bundlePath}`);
 	}
 
-	metadata.libraries.push({
+	prepared.set(lib.name, {
 		name: lib.name,
 		repository,
 		ref,
