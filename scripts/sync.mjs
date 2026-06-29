@@ -8,6 +8,8 @@ const PUBLIC = path.join(ROOT, 'public');
 const VENDOR = path.join(PUBLIC, 'vendor');
 const LIBRARIES_PATH = path.join(ROOT, 'libraries.json');
 const PORTAL_CSS_HREF = './styles/portal.css?v=portal-2';
+const LEGAL_FOOTER_LINKS = `\t\t\t\t\t<a href="https://legal.textmode.art/projects/examples.textmode.art/en/imprint">imprint</a>
+\t\t\t\t\t<a href="https://legal.textmode.art/projects/examples.textmode.art/en/privacy">privacy</a>`;
 
 const IMPORT_MAP = `<script type="importmap">
 {
@@ -77,6 +79,16 @@ const PORTAL_STYLES = `.examples-breadcrumb {
 \t\tpadding: 0 0.75rem;
 \t}
 }
+
+.examples-footer-links {
+\tflex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+\t.examples-footer-links {
+\t\twhite-space: normal;
+\t}
+}
 `;
 
 function cpRecursive(src, dest) {
@@ -143,6 +155,20 @@ function injectPortalHeader(filePath) {
 	return changed;
 }
 
+function injectLegalFooterLinks(filePath) {
+	let html = fs.readFileSync(filePath, 'utf8');
+	if (html.includes('https://legal.textmode.art/projects/examples.textmode.art/en/imprint')) {
+		return false;
+	}
+
+	html = html.replace(
+		'\n\t\t\t\t</nav>\n\t\t\t</footer>',
+		`\n${LEGAL_FOOTER_LINKS}\n\t\t\t\t</nav>\n\t\t\t</footer>`,
+	);
+	fs.writeFileSync(filePath, html, 'utf8');
+	return true;
+}
+
 function writePortalStyles(examplesDest) {
 	const stylesDir = path.join(examplesDest, 'styles');
 	if (!fs.existsSync(stylesDir)) return false;
@@ -192,7 +218,9 @@ function syncLibrary(lib) {
 	if (fs.existsSync(indexHtml)) {
 		const portalStylesWritten = writePortalStyles(examplesDest);
 		const portalHeaderInjected = injectPortalHeader(indexHtml);
+		const legalFooterInjected = injectLegalFooterLinks(indexHtml);
 		if (portalStylesWritten || portalHeaderInjected) console.log(`  portal:   linked back to landing index`);
+		if (legalFooterInjected) console.log(`  legal:    footer links injected`);
 	}
 
 	return { sketchCount, exampleCount, importInjected };

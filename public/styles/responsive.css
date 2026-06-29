@@ -44,7 +44,7 @@
 
 	.examples-footer-links {
 		gap: 0.5rem 0.75rem;
-		white-space: nowrap;
+		white-space: normal;
 	}
 
 	.examples-footer p {

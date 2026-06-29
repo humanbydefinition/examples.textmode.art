@@ -53,3 +53,13 @@
 		padding: 0 0.75rem;
 	}
 }
+
+.examples-footer-links {
+	flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+	.examples-footer-links {
+		white-space: normal;
+	}
+}
