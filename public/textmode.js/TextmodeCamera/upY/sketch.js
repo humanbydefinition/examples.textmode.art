@@ -1,0 +1,76 @@
+/**
+ * @title TextmodeCamera.upY
+ */
+const t = textmode.create({
+	width: window.innerWidth,
+	height: window.innerHeight,
+	fontSize: 16,
+});
+
+const labelLayer = t.layers.add();
+let upValue = 0;
+
+function drawText(text, x, y, r = 200, g = 220, b = 255) {
+	t.push();
+	t.translate(x, y);
+	t.charColor(r, g, b);
+	for (let i = 0; i < text.length; i++) {
+		t.char(text[i]);
+		t.point();
+		t.translate(1, 0);
+	}
+	t.pop();
+}
+
+function drawScene() {
+	t.push();
+	t.char('.');
+	t.charColor(60, 80, 120);
+	for (let x = -20; x <= 20; x += 4) t.line(x, 0, -20, x, 0, 20);
+	for (let z = -20; z <= 20; z += 4) t.line(-20, 0, z, 20, 0, z);
+	t.pop();
+	t.push();
+	t.translate(0, 5, 0);
+	t.char('#');
+	t.charColor(200, 220, 255);
+	t.box(4, 10, 4);
+	t.pop();
+}
+
+t.setup(() => {
+	t.perspective(58, 0.1, 4096);
+});
+
+t.draw(() => {
+	t.background(6, 10, 22);
+
+	const time = t.frameCount * 0.03;
+	// Side-on view; oscillating upY with a fixed upZ creates a roll
+	const cam = t.createCamera().setPosition(40, 10, 0).lookAt(0, 0, 0);
+	cam.setUp(0, Math.sin(time) * 1.5, 1);
+
+	upValue = cam.upY;
+	t.setCamera(cam);
+	drawScene();
+	t.resetCamera();
+});
+
+labelLayer.draw(() => {
+	t.clear();
+	const left = -Math.floor(t.grid.cols / 2);
+	const top = -Math.floor(t.grid.rows / 2);
+	let y = top + 3;
+	const x = left + 3;
+
+	drawText('UPY', x, y++, 100, 255, 140);
+	drawText('--------------------------------', x, y++, 80, 100, 150);
+	drawText('Y component of the up vector.', x, y++, 100, 220, 255);
+	drawText('Normally 1.0 for a world-up cam.', x, y++, 140, 160, 190);
+	drawText('Oscillating it here creates roll.', x, y++, 140, 160, 190);
+	drawText('--------------------------------', x, y++, 80, 100, 150);
+	drawText(`upY = ${upValue.toFixed(3)}`, x, y++, 120, 255, 180);
+});
+
+t.windowResized(() => {
+	t.resizeCanvas(window.innerWidth, window.innerHeight);
+});

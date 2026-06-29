@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8" />
+		<title>textmode.figlet.js - examples</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<link rel="preconnect" href="https://fonts.googleapis.com" />
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+		<link
+			href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+			rel="stylesheet"
+		/>
+		<link rel="stylesheet" href="./styles/index.css" />
+		<link rel="stylesheet" href="./styles/portal.css?v=portal-2" />
+	</head>
+
+	<body>
+		<div class="examples-page">
+			<header class="examples-header">
+				<nav class="examples-breadcrumb" aria-label="Breadcrumb">
+					<a href="../" aria-label="Back to all example libraries">
+						<span aria-hidden="true">&larr;</span>
+						<span>all libraries</span>
+					</a>
+				</nav>
+				<div class="examples-header-primary">
+					<div class="examples-brand">
+						<h1>textmode.figlet.js</h1>
+						<p>// hands off my beat</p>
+					</div>
+					<label class="examples-search" for="search">
+						<span class="examples-search-icon" aria-hidden="true">/</span>
+						<input
+							id="search"
+							type="text"
+							placeholder="filter examples..."
+							autocomplete="off"
+							spellcheck="false"
+						/>
+					</label>
+				</div>
+			</header>
+
+			<main
+				id="examples"
+				class="examples-browser"
+				data-manifest="./manifest.json"
+				data-source-base="https://github.com/humanbydefinition/textmode.figlet.js/blob/main"
+			></main>
+
+			<footer class="examples-footer">
+				<p>textmode.figlet.js - MIT license</p>
+				<nav class="examples-footer-links" aria-label="Project links">
+					<a href="https://github.com/humanbydefinition" target="_blank" rel="noopener noreferrer"
+						><span class="footer-link-label footer-link-label-desktop">@humanbydefinition</span
+						><span class="footer-link-label footer-link-label-mobile">@hbd</span></a
+					>
+					<a
+						href="https://github.com/humanbydefinition/textmode.figlet.js"
+						target="_blank"
+						rel="noopener noreferrer"
+						>github</a
+					>
+					<a href="https://code.textmode.art" target="_blank" rel="noopener noreferrer">docs</a>
+				</nav>
+			</footer>
+		</div>
+
+		<script type="module" src="./scripts/gallery/main.js"></script>
+	</body>
+</html>

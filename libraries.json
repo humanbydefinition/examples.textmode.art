@@ -1,0 +1,53 @@
+{
+	"site": {
+		"title": "examples.textmode.art",
+		"tagline": "// shared examples gallery for the textmode.js ecosystem"
+	},
+	"libraries": [
+		{
+			"name": "textmode.js",
+			"repo": "textmode.js-dev",
+			"folder": "textmode.js",
+			"bundle": "dist/textmode.esm.js",
+			"description": "DAS NEST",
+			"tagline": "// it's the only way to escape",
+			"github": "humanbydefinition/textmode.js"
+		},
+		{
+			"name": "textmode.filters.js",
+			"repo": "textmode.filters.js",
+			"folder": "textmode.filters.js",
+			"bundle": "dist/textmode.filters.esm.js",
+			"description": "Image filters add-on library for textmode.js",
+			"tagline": "// *laughing emoji*",
+			"github": "humanbydefinition/textmode.filters.js"
+		},
+		{
+			"name": "textmode.synth.js",
+			"repo": "textmode.synth.js",
+			"folder": "textmode.synth.js",
+			"bundle": "dist/textmode.synth.esm.js",
+			"description": "Synth engine for textmode.js",
+			"tagline": "// mind less",
+			"github": "humanbydefinition/textmode.synth.js"
+		},
+		{
+			"name": "textmode.export.js",
+			"repo": "textmode.export.js",
+			"folder": "textmode.export.js",
+			"bundle": "dist/textmode.export.esm.js",
+			"description": "Image, GIF, SVG, and video export plugin for textmode.js",
+			"tagline": "// no way out",
+			"github": "humanbydefinition/textmode.export.js"
+		},
+		{
+			"name": "textmode.figlet.js",
+			"repo": "textmode.figlet.js",
+			"folder": "textmode.figlet.js",
+			"bundle": "dist/textmode.figlet.esm.js",
+			"description": "FIGlet font support for textmode.js",
+			"tagline": "// invisible prey",
+			"github": "humanbydefinition/textmode.figlet.js"
+		}
+	]
+}
