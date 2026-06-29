@@ -11,14 +11,15 @@ const PORTAL_CSS_HREF = './styles/portal.css?v=portal-2';
 const LEGAL_FOOTER_LINKS = `\t\t\t\t\t<a href="https://legal.textmode.art/projects/examples.textmode.art/en/imprint">imprint</a>
 \t\t\t\t\t<a href="https://legal.textmode.art/projects/examples.textmode.art/en/privacy">privacy</a>`;
 
+const IMPORT_MAP_PATH_PREFIX = '../vendor';
 const IMPORT_MAP = `<script type="importmap">
 {
   "imports": {
-    "textmode.js": "/vendor/textmode.js/index.js",
-    "textmode.filters.js": "/vendor/textmode.filters.js/index.js",
-    "textmode.synth.js": "/vendor/textmode.synth.js/index.js",
-    "textmode.export.js": "/vendor/textmode.export.js/index.js",
-    "textmode.figlet.js": "/vendor/textmode.figlet.js/index.js"
+    "textmode.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.js/index.js",
+    "textmode.filters.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.filters.js/index.js",
+    "textmode.synth.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.synth.js/index.js",
+    "textmode.export.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.export.js/index.js",
+    "textmode.figlet.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.figlet.js/index.js"
   }
 }
 </script>
@@ -108,9 +109,23 @@ function cpRecursive(src, dest) {
 
 function injectImportMap(filePath) {
 	let html = fs.readFileSync(filePath, 'utf8');
-	if (html.includes('<script type="importmap">')) {
-		return false;
+	const importMapPattern = /<script type="importmap">[\s\S]*?<\/script>/;
+	const existingImportMap = html.match(importMapPattern)?.[0];
+
+	if (existingImportMap) {
+		if (!existingImportMap.includes('"textmode.js"')) {
+			return false;
+		}
+
+		if (existingImportMap === IMPORT_MAP.trim()) {
+			return false;
+		}
+
+		html = html.replace(importMapPattern, IMPORT_MAP.trim());
+		fs.writeFileSync(filePath, html, 'utf8');
+		return true;
 	}
+
 	html = html.replace('</head>', `\t${IMPORT_MAP}</head>`);
 	fs.writeFileSync(filePath, html, 'utf8');
 	return true;
