@@ -18,14 +18,15 @@ browsable gallery. Each library's `examples/` folder is hosted at its own URL pa
 │   ├── index.html            # landing page
 │   ├── styles/               # landing page @layer CSS
 │   ├── scripts/landing/      # landing page JavaScript
-│   ├── vendor/               # library ESM bundles (synced from sibling repos)
+│   ├── vendor/               # library ESM bundles (synced from source repos)
 │   ├── textmode.js/          # synced examples (whole examples/ folder)
 │   ├── textmode.filters.js/
 │   ├── textmode.synth.js/
 │   ├── textmode.export.js/
 │   └── textmode.figlet.js/
-├── libraries.json            # library registry (drives sync + landing page)
-├── scripts/sync.mjs          # sync examples + vendor bundles from sibling repos
+├── libraries.json            # library registry (drives sync, CI sources, and landing page)
+├── scripts/prepare-sources.mjs # clone/build upstream sources for CI deployment
+├── scripts/sync.mjs          # sync examples + vendor bundles from source repos
 └── CNAME                     # custom domain
 ```
 
@@ -41,7 +42,7 @@ No Vite build step, no module bundling — the entire site is pure static files.
 
 ## Setup
 
-The sibling textmode repositories must exist at `../textmode.js-dev/`,
+For local development, the sibling textmode repositories must exist at `../textmode.js-dev/`,
 `../textmode.filters.js/`, etc. and their `dist/` bundles must be built.
 
 ```bash
@@ -49,6 +50,9 @@ npm install    # install dev tooling (Prettier, markdownlint, serve)
 npm run sync   # copy examples + vendor bundles from all sibling repos
 npm run dev    # start static server at http://localhost:5180
 ```
+
+CI uses the same sync script with `TEXTMODE_EXAMPLES_SOURCE_ROOT=.sources`, after cloning
+and building the public upstream repositories listed in `libraries.json`.
 
 To sync a single library:
 
@@ -68,7 +72,10 @@ updates, etc.), re-run `npm run sync` to update the gallery.
 
 ## Deployment
 
-Push to `main`. GitHub Actions deploys `public/` to GitHub Pages at
+Push to `main`. GitHub Actions clones each library source repository from its configured
+`main` ref, runs `npm ci` and `npm run build` in each source checkout, syncs the latest
+`examples/` folders and built ESM bundles into `public/`, commits generated `public/`
+changes back with `[skip ci]`, and deploys `public/` to GitHub Pages at
 [examples.textmode.art](https://examples.textmode.art).
 
 ## Adding a new library

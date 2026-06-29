@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.kaleid
+ * @author codex
  */
 
 const t = textmode.create({

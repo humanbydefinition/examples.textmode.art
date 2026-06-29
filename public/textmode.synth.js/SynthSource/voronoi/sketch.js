@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.voronoi
+ * @author codex
  */
 
 const t = textmode.create({

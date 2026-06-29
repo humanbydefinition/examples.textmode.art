@@ -4,6 +4,8 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const PARENT = path.resolve(ROOT, '..');
+const SOURCE_ROOT = path.resolve(process.env.TEXTMODE_EXAMPLES_SOURCE_ROOT || PARENT);
+const STRICT = ['1', 'true'].includes((process.env.TEXTMODE_SYNC_STRICT || '').toLowerCase());
 const PUBLIC = path.join(ROOT, 'public');
 const VENDOR = path.join(PUBLIC, 'vendor');
 const LIBRARIES_PATH = path.join(ROOT, 'libraries.json');
@@ -91,6 +93,8 @@ const PORTAL_STYLES = `.examples-breadcrumb {
 \t}
 }
 `;
+
+const failures = [];
 
 function cpRecursive(src, dest) {
 	if (!fs.existsSync(src)) return;
@@ -196,11 +200,12 @@ function writePortalStyles(examplesDest) {
 function syncLibrary(lib) {
 	console.log(`\n--- ${lib.name} ---`);
 
-	const examplesSrc = path.join(PARENT, lib.repo, 'examples');
+	const repoSrc = path.join(SOURCE_ROOT, lib.repo);
+	const examplesSrc = path.join(repoSrc, 'examples');
 	const examplesDest = path.join(PUBLIC, lib.folder);
 
 	if (!fs.existsSync(examplesSrc)) {
-		console.warn(`  SKIP: source not found at ${examplesSrc}`);
+		reportProblem(`${lib.name}: source not found at ${examplesSrc}`);
 		return null;
 	}
 
@@ -208,17 +213,22 @@ function syncLibrary(lib) {
 	cpRecursive(examplesSrc, examplesDest);
 	const sketchCount = countSketches(examplesDest);
 	console.log(`  examples: ${PATH(examplesDest)} (${sketchCount} sketches)`);
+	if (sketchCount === 0) {
+		reportProblem(`${lib.name}: synced examples contain no sketch.js files`);
+	}
 
-	const bundleSrc = path.join(PARENT, lib.repo, lib.bundle);
+	const bundleSrc = path.join(repoSrc, lib.bundle);
 	const bundleDestDir = path.join(VENDOR, lib.name);
 	const bundleDest = path.join(bundleDestDir, 'index.js');
+	let bundleCopied = false;
 
 	if (fs.existsSync(bundleSrc)) {
 		fs.mkdirSync(bundleDestDir, { recursive: true });
 		fs.copyFileSync(bundleSrc, bundleDest);
+		bundleCopied = true;
 		console.log(`  vendor:   ${PATH(bundleDest)}`);
 	} else {
-		console.warn(`  vendor:   MISSING — ${bundleSrc} not found (run \`npm run build\` in ${lib.repo} first)`);
+		reportProblem(`${lib.name}: vendor bundle missing at ${bundleSrc} (run \`npm run build\` in ${lib.repo} first)`);
 	}
 
 	const sketchHtml = path.join(examplesDest, 'sketch.html');
@@ -238,7 +248,7 @@ function syncLibrary(lib) {
 		if (legalFooterInjected) console.log(`  legal:    footer links injected`);
 	}
 
-	return { sketchCount, exampleCount, importInjected };
+	return { sketchCount, exampleCount, importInjected, bundleCopied };
 }
 
 function countSketches(dir) {
@@ -270,6 +280,14 @@ function PATH(abs) {
 	return path.relative(ROOT, abs);
 }
 
+function reportProblem(message) {
+	if (STRICT) {
+		failures.push(message);
+	} else {
+		console.warn(`  ${message}`);
+	}
+}
+
 // Copy libraries.json into public/ so the landing page can fetch it
 fs.copyFileSync(LIBRARIES_PATH, path.join(PUBLIC, 'libraries.json'));
 console.log(`  config:   copied libraries.json → public/`);
@@ -279,6 +297,8 @@ const targetLib = process.argv[2];
 
 console.log('examples.textmode.art — sync');
 console.log('============================');
+console.log(`source root: ${PATH(SOURCE_ROOT)}`);
+if (STRICT) console.log('strict mode: enabled');
 
 const results = {};
 for (const lib of registry.libraries) {
@@ -287,8 +307,20 @@ for (const lib of registry.libraries) {
 	if (result) results[lib.name] = result;
 }
 
+if (targetLib && Object.keys(results).length === 0) {
+	reportProblem(`no library matched target "${targetLib}"`);
+}
+
 console.log('\n============================');
 console.log('Sync complete.');
 for (const [name, result] of Object.entries(results)) {
-	console.log(`  ${name}: ${result.exampleCount} examples, ${result.sketchCount} sketches, vendor ${result.importInjected ? 'ok' : 'skipped'}`);
+	console.log(`  ${name}: ${result.exampleCount} examples, ${result.sketchCount} sketches, vendor ${result.bundleCopied ? 'ok' : 'missing'}`);
+}
+
+if (failures.length > 0) {
+	console.error('\nStrict sync failed:');
+	for (const failure of failures) {
+		console.error(`  - ${failure}`);
+	}
+	process.exit(1);
 }

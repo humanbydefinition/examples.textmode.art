@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.solid2
+ * @author codex
  */
 
 const t = textmode.create({

@@ -8,23 +8,23 @@
 			"examples": [
 				{
 					"title": "FiltersPlugin.brightness",
-					"sourceFile": "examples/ColorAdjustment/brightness/sketch.js"
+					"sourceFile": "examples/brightness/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.contrast",
-					"sourceFile": "examples/ColorAdjustment/contrast/sketch.js"
+					"sourceFile": "examples/contrast/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.saturation",
-					"sourceFile": "examples/ColorAdjustment/saturation/sketch.js"
+					"sourceFile": "examples/saturation/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.hueRotate",
-					"sourceFile": "examples/ColorAdjustment/hueRotate/sketch.js"
+					"sourceFile": "examples/hueRotate/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.posterize",
-					"sourceFile": "examples/ColorAdjustment/posterize/sketch.js"
+					"sourceFile": "examples/posterize/sketch.js"
 				}
 			]
 		},
@@ -34,15 +34,15 @@
 			"examples": [
 				{
 					"title": "FiltersPlugin.chromaticAberration",
-					"sourceFile": "examples/Distortion/chromaticAberration/sketch.js"
+					"sourceFile": "examples/chromaticAberration/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.pixelate",
-					"sourceFile": "examples/Distortion/pixelate/sketch.js"
+					"sourceFile": "examples/pixelate/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.gridDistortion",
-					"sourceFile": "examples/Distortion/gridDistortion/sketch.js"
+					"sourceFile": "examples/gridDistortion/sketch.js"
 				}
 			]
 		},
@@ -52,27 +52,27 @@
 			"examples": [
 				{
 					"title": "FiltersPlugin.glitch",
-					"sourceFile": "examples/Stylization/glitch/sketch.js"
+					"sourceFile": "examples/glitch/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.crtMattias",
-					"sourceFile": "examples/Stylization/crtMattias/sketch.js"
+					"sourceFile": "examples/crtMattias/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.scanlines",
-					"sourceFile": "examples/Stylization/scanlines/sketch.js"
+					"sourceFile": "examples/scanlines/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.vignette",
-					"sourceFile": "examples/Stylization/vignette/sketch.js"
+					"sourceFile": "examples/vignette/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.bloom",
-					"sourceFile": "examples/Stylization/bloom/sketch.js"
+					"sourceFile": "examples/bloom/sketch.js"
 				},
 				{
 					"title": "FiltersPlugin.filmGrain",
-					"sourceFile": "examples/Stylization/filmGrain/sketch.js"
+					"sourceFile": "examples/filmGrain/sketch.js"
 				}
 			]
 		}

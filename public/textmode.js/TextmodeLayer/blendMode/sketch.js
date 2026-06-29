@@ -2,12 +2,13 @@
  * @title TextmodeLayer.blendMode
  */
 const t = textmode.create({
+	pixelDensity: 1,
 	width: window.innerWidth,
 	height: window.innerHeight,
 	fontSize: 16,
 });
 
-const blendModes = [t.BLEND_ADDITIVE, t.BLEND_SCREEN, t.BLEND_OVERLAY, t.BLEND_DIFFERENCE, t.BLEND_MULTIPLY];
+const blendModes = ['additive', 'screen', 'overlay', 'difference', 'multiply'];
 const colors = [
 	[255, 80, 150],
 	[80, 180, 255],

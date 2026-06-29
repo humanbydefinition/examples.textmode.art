@@ -14,6 +14,7 @@ sourceCanvas.style.display = 'block';
 document.body.appendChild(sourceCanvas);
 
 const t = textmode.create({
+	pixelDensity: 1,
 	canvas: sourceCanvas,
 	overlay: true,
 	width: window.innerWidth,

@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.charColor2
+ * @author codex
  */
 
 const t = textmode.create({

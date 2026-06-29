@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.softlight
+ * @author codex
  */
 
 const t = textmode.create({

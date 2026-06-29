@@ -7,6 +7,7 @@ const TILE_ROWS = 16;
 const TILE_COUNT = TILE_COLUMNS * TILE_ROWS;
 
 const t = textmode.create({
+	pixelDensity: 1,
 	width: window.innerWidth,
 	height: window.innerHeight,
 	fontSize: 16,

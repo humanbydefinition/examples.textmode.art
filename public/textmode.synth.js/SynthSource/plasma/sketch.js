@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.plasma
+ * @author codex
  */
 
 const t = textmode.create({

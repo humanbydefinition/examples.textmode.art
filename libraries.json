@@ -11,7 +11,11 @@
 			"bundle": "dist/textmode.esm.js",
 			"description": "DAS NEST",
 			"tagline": "// it's the only way to escape",
-			"github": "humanbydefinition/textmode.js"
+			"github": "humanbydefinition/textmode.js",
+			"source": {
+				"repository": "humanbydefinition/textmode.js-dev",
+				"ref": "main"
+			}
 		},
 		{
 			"name": "textmode.filters.js",
@@ -20,7 +24,11 @@
 			"bundle": "dist/textmode.filters.esm.js",
 			"description": "Image filters add-on library for textmode.js",
 			"tagline": "// *laughing emoji*",
-			"github": "humanbydefinition/textmode.filters.js"
+			"github": "humanbydefinition/textmode.filters.js",
+			"source": {
+				"repository": "humanbydefinition/textmode.filters.js",
+				"ref": "main"
+			}
 		},
 		{
 			"name": "textmode.synth.js",
@@ -29,7 +37,11 @@
 			"bundle": "dist/textmode.synth.esm.js",
 			"description": "Synth engine for textmode.js",
 			"tagline": "// mind less",
-			"github": "humanbydefinition/textmode.synth.js"
+			"github": "humanbydefinition/textmode.synth.js",
+			"source": {
+				"repository": "humanbydefinition/textmode.synth.js",
+				"ref": "main"
+			}
 		},
 		{
 			"name": "textmode.export.js",
@@ -38,7 +50,11 @@
 			"bundle": "dist/textmode.export.esm.js",
 			"description": "Image, GIF, SVG, and video export plugin for textmode.js",
 			"tagline": "// no way out",
-			"github": "humanbydefinition/textmode.export.js"
+			"github": "humanbydefinition/textmode.export.js",
+			"source": {
+				"repository": "humanbydefinition/textmode.export.js",
+				"ref": "main"
+			}
 		},
 		{
 			"name": "textmode.figlet.js",
@@ -47,7 +63,11 @@
 			"bundle": "dist/textmode.figlet.esm.js",
 			"description": "FIGlet font support for textmode.js",
 			"tagline": "// invisible prey",
-			"github": "humanbydefinition/textmode.figlet.js"
+			"github": "humanbydefinition/textmode.figlet.js",
+			"source": {
+				"repository": "humanbydefinition/textmode.figlet.js",
+				"ref": "main"
+			}
 		}
 	]
 }

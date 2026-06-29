@@ -1,0 +1,50 @@
+{
+	"schemaVersion": 1,
+	"libraries": [
+		{
+			"name": "textmode.js",
+			"repository": "humanbydefinition/textmode.js-dev",
+			"ref": "main",
+			"commit": "449449d1f3fdbd1a3e5888e70735684787da4702",
+			"examples": "textmode.js-dev/examples",
+			"bundle": "textmode.js-dev/dist/textmode.esm.js",
+			"sketchCount": 375
+		},
+		{
+			"name": "textmode.filters.js",
+			"repository": "humanbydefinition/textmode.filters.js",
+			"ref": "main",
+			"commit": "0f1ee1d7a7a8e8126fa966fa11701c710a9eaa61",
+			"examples": "textmode.filters.js/examples",
+			"bundle": "textmode.filters.js/dist/textmode.filters.esm.js",
+			"sketchCount": 14
+		},
+		{
+			"name": "textmode.synth.js",
+			"repository": "humanbydefinition/textmode.synth.js",
+			"ref": "main",
+			"commit": "a8d654b84e238384871f70709cc16d2bdca75b35",
+			"examples": "textmode.synth.js/examples",
+			"bundle": "textmode.synth.js/dist/textmode.synth.esm.js",
+			"sketchCount": 107
+		},
+		{
+			"name": "textmode.export.js",
+			"repository": "humanbydefinition/textmode.export.js",
+			"ref": "main",
+			"commit": "0cebe16fc6b73bc8c71cb41c8f56c02c28fd18da",
+			"examples": "textmode.export.js/examples",
+			"bundle": "textmode.export.js/dist/textmode.export.esm.js",
+			"sketchCount": 2
+		},
+		{
+			"name": "textmode.figlet.js",
+			"repository": "humanbydefinition/textmode.figlet.js",
+			"ref": "main",
+			"commit": "c768af62356f74dfaf27d442dc8b7b73049f8a72",
+			"examples": "textmode.figlet.js/examples",
+			"bundle": "textmode.figlet.js/dist/textmode.figlet.esm.js",
+			"sketchCount": 23
+		}
+	]
+}

@@ -1,5 +1,6 @@
 /**
  * @title SynthSource.swirl
+ * @author codex
  */
 
 const t = textmode.create({

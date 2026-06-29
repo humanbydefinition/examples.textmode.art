@@ -3,6 +3,7 @@
  * @author humanbydefinition
  */
 const t = textmode.create({
+	canvas: document.getElementById('textmode-canvas'),
 	width: window.innerWidth,
 	height: window.innerHeight,
 	fontSize: 28,
