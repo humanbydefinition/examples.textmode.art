@@ -52,10 +52,6 @@ npm run sync   # fetch latest main examples + vendor bundles from source repos
 npm run dev    # start static server at http://localhost:5180
 ```
 
-For debugging local sibling repositories without fetching from GitHub, use
-`npm run sync:local`. Those sibling repos must exist at `../textmode.js-dev/`,
-`../textmode.filters.js/`, etc. and their `dist/` bundles must be built.
-
 To sync a single library:
 
 ```bash
@@ -66,7 +62,6 @@ npm run sync -- textmode.filters.js
 
 - `npm run dev` — start the static server
 - `npm run sync` — fetch latest upstream `main`, build, and sync all libraries
-- `npm run sync:local` — sync from local sibling repositories
 - `npm run format` — format with Prettier
 - `npm run check` — format check + Markdown lint
 
