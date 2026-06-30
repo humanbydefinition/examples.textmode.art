@@ -28,11 +28,14 @@ Each upstream library's `examples/` folder, ESM bundle, and sketch runner are sy
 ## Local development
 
 ```bash
-npm install
-npm run sync       # fetch + build upstream, populate public/
+npm install        # installs deps + auto-syncs public/ (best-effort)
+npm run sync       # re-sync manually (refresh, or if auto-sync was skipped/failed)
 npm run dev        # http://localhost:5180
 npm run build      # typecheck + vite build + postbuild route fan-out
 ```
+
+`npm install` also runs a best-effort auto-sync via the `postinstall` hook.
+Set `TEXTMODE_SKIP_POSTINSTALL_SYNC=1` to skip it (e.g., when offline or adding a dependency).
 
 To sync a single library: `npm run sync -- textmode.filters.js`.
 

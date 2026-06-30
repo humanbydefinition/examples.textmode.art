@@ -10,6 +10,7 @@
 		"prepare:sources": "node scripts/prepare-sources.mjs",
 		"sync": "node scripts/sync-latest.mjs",
 		"sync:ci": "node scripts/sync-latest.mjs",
+		"postinstall": "node scripts/postinstall.mjs",
 		"dev": "vite --host --port 5180",
 		"build": "tsc --noEmit && vite build && node scripts/postbuild.mjs",
 		"preview": "vite preview --host --port 4180",

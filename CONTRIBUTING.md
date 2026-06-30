@@ -34,8 +34,10 @@ This project and everyone participating in it is governed by the [Contributor Co
 ### Installation
 
 ```bash
-npm install
+npm install        # installs dependencies and auto-syncs upstream examples
 ```
+
+`npm install` also runs a best-effort auto-sync via its `postinstall` hook, populating `public/` with upstream examples and vendor bundles. If the sync fails (offline or broken upstream), install still succeeds — run `npm run sync` manually when the issue is resolved. Set `TEXTMODE_SKIP_POSTINSTALL_SYNC=1` to skip the auto-sync entirely.
 
 ### Available scripts
 
@@ -61,6 +63,7 @@ npm install
 |---|---|
 | `TEXTMODE_EXAMPLES_SOURCE_ROOT` | Overrides the temporary workspace directory for upstream clone-build steps (default: OS temp) |
 | `TEXTMODE_SYNC_STRICT` | When `1`, synchronization collects all problems and exits non-zero instead of warning (set automatically by `sync-latest.mjs`) |
+| `TEXTMODE_SKIP_POSTINSTALL_SYNC` | When `1` or `true`, skips the best-effort auto-sync that runs after `npm install` (useful when offline or when adding a dependency). Skipped automatically when `CI` is set. |
 
 ## Project structure
 
@@ -160,6 +163,8 @@ This file drives the sync pipeline, the React app's routing, the import maps inj
 1. **`scripts/prepare-sources.mjs`** — for each library (or a single targeted one via `npm run sync -- <name>`), `git clone --depth 1 --branch <ref>` the upstream repository, optionally run `npm ci && npm run build`, and record provenance (commit SHA, sketch count) into `public/source-metadata.json`.
 1. **`scripts/sync.mjs`** — clears app-owned legacy static assets from `public/`, copies the upstream `examples/` folder into `public/<folder>/`, removes the source-local gallery runtime, copies the built ESM bundle to `public/vendor/<name>/index.js`, and injects the shared import map (mapping every library name to `../vendor/<name>/index.js`) into each `sketch.html`.
 1. **Cleanup** — the temp workspace is removed.
+
+A best-effort variant of this pipeline also runs automatically from the `postinstall` lifecycle hook after every `npm install`. When `CI` is set (e.g., GitHub Actions), the hook is skipped — the explicit `npm run sync:ci` step remains the strict source of truth. If `postinstall` fails, `npm install` still succeeds; run `npm run sync` manually to retry.
 
 The `public/` directory is gitignored; everything is regenerated from upstream source at sync time.
 
