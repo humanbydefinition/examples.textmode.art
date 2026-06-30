@@ -23,8 +23,12 @@ export function PageFooter({ label, githubUrl, docsUrl = 'https://code.textmode.
 				<a href={docsUrl} target="_blank" rel="noopener noreferrer">
 					docs
 				</a>
-				<a href={IMPRINT_URL}>imprint</a>
-				<a href={PRIVACY_URL}>privacy</a>
+				<a href={IMPRINT_URL} target="_blank" rel="noopener noreferrer">
+					imprint
+				</a>
+				<a href={PRIVACY_URL} target="_blank" rel="noopener noreferrer">
+					privacy
+				</a>
 			</nav>
 		</footer>
 	);
