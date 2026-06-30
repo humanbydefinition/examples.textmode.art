@@ -31,8 +31,7 @@ its own URL path:
 ├── scripts/prepare-sources.mjs # clone/build upstream sources in a temporary workspace
 ├── scripts/sync.mjs          # sync examples, sketch runners, import maps, and vendor bundles
 ├── scripts/postbuild.mjs     # copy the app shell to each library route in dist/
-├── scripts/validate-static.mjs # validate manifests, sketch runners, vendor bundles, and dist routes
-└── CNAME                     # custom domain
+└── scripts/validate-static.mjs # validate manifests, sketch runners, vendor bundles, and dist routes
 ```
 
 ## How it works
