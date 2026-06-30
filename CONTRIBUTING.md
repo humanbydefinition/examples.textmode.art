@@ -4,21 +4,6 @@ First off, thank you for considering contributing to `examples.textmode.art`!
 
 This project aggregates the `examples/` folders from every library in the textmode.js ecosystem into a single browsable gallery. App and infrastructure contributions are welcome. Example sketches are curated in their upstream library repositories.
 
-## Table of contents
-
-- [Code of conduct](#code-of-conduct)
-- [Getting started](#getting-started)
-- [Development setup](#development-setup)
-- [Project structure](#project-structure)
-- [How sync and build work](#how-sync-and-build-work)
-- [Testing](#testing)
-- [Code style](#code-style)
-- [Adding a new library](#adding-a-new-library)
-- [Deployment](#deployment)
-- [Pull request process](#pull-request-process)
-- [Reporting bugs](#reporting-bugs)
-- [Suggesting features](#suggesting-features)
-
 ## Code of conduct
 
 This project and everyone participating in it is governed by the [Contributor Covenant 3.0 Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [hello@textmode.art](mailto:hello@textmode.art).
