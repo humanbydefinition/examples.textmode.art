@@ -208,7 +208,7 @@
 		align-content: start;
 		min-height: 0;
 		overflow: auto;
-		padding-right: 0.25rem;
+		padding: 1px 0.25rem 0 0;
 	}
 
 	.library-card {
