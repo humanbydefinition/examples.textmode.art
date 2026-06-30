@@ -1,19 +1,15 @@
 import { spawnSync } from 'node:child_process';
 import fs from 'node:fs';
 import path from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { countSketches, readJson, writeText } from './lib/files.mjs';
+import { PUBLIC, ROOT, SOURCE_METADATA_PATH, SOURCE_ROOT, projectPath } from './lib/paths.mjs';
+import { loadRegistry } from './lib/registry.mjs';
 
-const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const PUBLIC = path.join(ROOT, 'public');
-const LIBRARIES_PATH = path.join(ROOT, 'libraries.json');
-const SOURCE_ROOT = path.resolve(process.env.TEXTMODE_EXAMPLES_SOURCE_ROOT || path.join(ROOT, '.sources'));
 const targetLib = process.argv[2];
-
-const registry = JSON.parse(fs.readFileSync(LIBRARIES_PATH, 'utf8'));
-const metadataPath = path.join(PUBLIC, 'source-metadata.json');
+const registry = loadRegistry();
 const metadata =
-	targetLib && fs.existsSync(metadataPath)
-		? JSON.parse(fs.readFileSync(metadataPath, 'utf8'))
+	targetLib && fs.existsSync(SOURCE_METADATA_PATH)
+		? readJson(SOURCE_METADATA_PATH)
 		: {
 				schemaVersion: 1,
 				libraries: [],
@@ -34,8 +30,8 @@ for (const lib of libraries) {
 
 metadata.libraries = registry.libraries.filter((lib) => prepared.has(lib.name)).map((lib) => prepared.get(lib.name));
 
-fs.writeFileSync(metadataPath, `${JSON.stringify(metadata, null, '\t')}\n`, 'utf8');
-console.log(`\nWrote ${path.relative(ROOT, metadataPath)}`);
+writeText(SOURCE_METADATA_PATH, `${JSON.stringify(metadata, null, '\t')}\n`);
+console.log(`\nWrote ${projectPath(SOURCE_METADATA_PATH)}`);
 
 function prepareLibrary(lib) {
 	const source = lib.source || {};
@@ -54,7 +50,7 @@ function prepareLibrary(lib) {
 
 	console.log(`\n--- ${lib.name} ---`);
 	console.log(`  source:  ${repository}@${ref}`);
-	console.log(`  target:  ${path.relative(ROOT, repoDir)}`);
+	console.log(`  target:  ${projectPath(repoDir)}`);
 
 	fs.rmSync(repoDir, { recursive: true, force: true });
 	run('git', ['clone', '--depth', '1', '--branch', ref, `https://github.com/${repository}.git`, repoDir], ROOT);
@@ -112,15 +108,6 @@ function run(command, args, cwd, extraEnv = {}) {
 	}
 
 	return result.stdout;
-}
-
-function countSketches(dir) {
-	let count = 0;
-	const entries = fs.readdirSync(dir, { withFileTypes: true, recursive: true });
-	for (const entry of entries) {
-		if (entry.isFile() && entry.name === 'sketch.js') count++;
-	}
-	return count;
 }
 
 function fail(message) {

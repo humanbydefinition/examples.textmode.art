@@ -17,16 +17,18 @@ function renderEntry(entry) {
 	const name = escapeHtml(entry.name);
 	const title = escapeHtml(entry.title);
 	const subgroup = escapeHtml(entry.subgroup ?? '');
+	const entrySearch = escapeHtml((entry.name ?? '').toLowerCase());
+	const titleSearch = escapeHtml((entry.title ?? entry.name ?? '').toLowerCase());
 	const subgroupSearch = escapeHtml((entry.subgroup ?? '').toLowerCase());
 
 	return `
 		<a
 			href="${href}"
 			class="entry-link"
-			data-entry="${escapeHtml(entry.name.toLowerCase())}"
+			data-entry="${entrySearch}"
 			data-entry-name="${name}"
 			data-entry-title="${title}"
-			data-entry-title-search="${escapeHtml(entry.title.toLowerCase())}"
+			data-entry-title-search="${titleSearch}"
 			data-entry-path="${escapeHtml(entry.path)}"
 			data-subgroup="${subgroupSearch}"
 			data-subgroup-name="${subgroup}"
@@ -58,14 +60,16 @@ function renderSubgroup(subgroup) {
 
 function renderGroup(group, index) {
 	const startsOpen = group.entries.length <= 12 || index < 2;
+	const groupName = group.name || 'Examples';
+	const groupDescription = group.description || '';
 
 	return `
-		<details class="example-group" data-group data-group-name="${escapeHtml(group.name)}" data-group-search="${escapeHtml(group.name.toLowerCase())}" ${
+		<details class="example-group" data-group data-group-name="${escapeHtml(groupName)}" data-group-search="${escapeHtml(groupName.toLowerCase())}" ${
 			startsOpen ? 'open' : ''
 		}>
 			<summary class="group-summary">
-				<span class="group-title">${escapeHtml(group.name)}</span>
-				<span class="group-description">${escapeHtml(group.description)}</span>
+				<span class="group-title">${escapeHtml(groupName)}</span>
+				<span class="group-description">${escapeHtml(groupDescription)}</span>
 				<span class="group-count" data-count>${group.entries.length}</span>
 			</summary>
 			<div class="group-content">

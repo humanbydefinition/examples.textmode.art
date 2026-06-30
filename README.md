@@ -16,25 +16,29 @@ browsable gallery. Each library's `examples/` folder is hosted at its own URL pa
 ```
 ├── public/                   # static site root (served as-is, no build step)
 │   ├── index.html            # generated landing page
-│   ├── styles/               # landing page @layer CSS
-│   ├── scripts/library-gallery/ # shared generated library gallery runtime
+│   ├── styles/               # copied first-party CSS output
+│   ├── scripts/library-gallery/ # copied first-party gallery runtime output
 │   ├── vendor/               # library ESM bundles (synced from source repos)
 │   ├── textmode.js/          # synced examples (whole examples/ folder)
 │   ├── textmode.filters.js/
 │   ├── textmode.synth.js/
 │   ├── textmode.export.js/
 │   └── textmode.figlet.js/
+├── src/public-assets/        # maintained CSS and browser runtime source
 ├── libraries.json            # library registry (drives sync, CI sources, and landing page)
 ├── scripts/prepare-sources.mjs # clone/build upstream sources for CI deployment
-├── scripts/sync.mjs          # sync examples + vendor bundles from source repos
+├── scripts/sync.mjs          # orchestrate asset copy, example sync, and page generation
+├── scripts/lib/              # sync helpers for registry, templates, import maps, and files
 └── CNAME                     # custom domain
 ```
 
 ## How it works
 
 Each library's `examples/` folder provides its manifest, sketch runner, sketch files, and
-supporting assets. During sync, this project generates the landing page and each library
-index page from the root `libraries.json` registry, while keeping sketch pages runnable with
+supporting assets. During sync, this project copies maintained first-party assets from
+`src/public-assets/` into `public/`, syncs upstream examples and vendor bundles, removes
+obsolete source-local gallery runtimes, and generates the landing page and each library
+index page from the root `libraries.json` registry. Sketch pages stay runnable with
 browser-native [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
 that resolve bare specifiers (`textmode.js`, `textmode.filters.js`, etc.) to pre-built ESM
 bundles in `public/vendor/`.
@@ -65,7 +69,7 @@ npm run sync -- textmode.filters.js
 - `npm run dev` — start the static server
 - `npm run sync` — fetch latest upstream `main`, build, and sync all libraries
 - `npm run format` — format with Prettier
-- `npm run check` — format check + Markdown lint
+- `npm run check` — format check + Markdown lint + generated output validation
 
 After publishing changes to a library's `main` branch, re-run `npm run sync` to update the
 gallery from that latest public source.

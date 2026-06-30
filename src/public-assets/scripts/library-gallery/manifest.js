@@ -1,5 +1,5 @@
 export function getExamplePath(sourceFile) {
-	if (!sourceFile.startsWith('examples/') || !sourceFile.endsWith('/sketch.js')) {
+	if (typeof sourceFile !== 'string' || !sourceFile.startsWith('examples/') || !sourceFile.endsWith('/sketch.js')) {
 		throw new Error(`Invalid example source file: ${sourceFile}`);
 	}
 
@@ -21,12 +21,13 @@ export function getExampleSourceHref(examplePath) {
 
 export function normalizeExample(example, subgroupName) {
 	const path = getExamplePath(example.sourceFile);
+	const name = getExampleName(path);
 
 	return {
-		name: getExampleName(path),
+		name,
 		path,
-		title: example.title,
-		subgroup: subgroupName,
+		title: example.title || name,
+		subgroup: subgroupName || null,
 	};
 }
 
@@ -40,11 +41,12 @@ export function normalizeManifest(manifest) {
 
 		if (Array.isArray(group.subgroups)) {
 			for (const subgroup of group.subgroups) {
+				const subgroupName = subgroup.name || null;
 				const entries = Array.isArray(subgroup.examples)
-					? subgroup.examples.map((example) => normalizeExample(example, subgroup.name))
+					? subgroup.examples.map((example) => normalizeExample(example, subgroupName))
 					: [];
 
-				subgroups.push({ name: subgroup.name, entries });
+				subgroups.push({ name: subgroupName, entries });
 			}
 		} else if (Array.isArray(group.examples)) {
 			subgroups.push({
@@ -54,7 +56,7 @@ export function normalizeManifest(manifest) {
 		}
 
 		const entries = subgroups.flatMap((subgroup) => subgroup.entries);
-		return { name: group.name, description: group.description, entries, subgroups };
+		return { name: group.name || 'Examples', description: group.description || '', entries, subgroups };
 	});
 }
 

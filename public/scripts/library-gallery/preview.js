@@ -1,13 +1,19 @@
 import { getExampleSourceHref } from './manifest.js';
 
 let activeBadge = null;
+const previewElements = new WeakMap();
 
 export function getActiveBadge() {
 	return activeBadge;
 }
 
 function getPreviewElements(container) {
-	return {
+	const cached = previewElements.get(container);
+	if (cached?.panel?.isConnected) {
+		return cached;
+	}
+
+	const elements = {
 		panel: container.querySelector('[data-preview-panel]'),
 		kicker: container.querySelector('[data-preview-kicker]'),
 		title: container.querySelector('[data-preview-title]'),
@@ -17,6 +23,8 @@ function getPreviewElements(container) {
 		empty: container.querySelector('[data-preview-empty]'),
 		frame: container.querySelector('[data-preview-frame]'),
 	};
+	previewElements.set(container, elements);
+	return elements;
 }
 
 export function closePreview(container) {
@@ -76,7 +84,7 @@ export function openPreview(badge, container, options = {}) {
 	preview.frame.src = href;
 
 	if (options.updateHash !== false) {
-		window.history.replaceState(null, '', `#${badge.dataset.entryPath}`);
+		window.history.replaceState(null, '', `#${encodeURIComponent(badge.dataset.entryPath)}`);
 	}
 
 	if (options.scroll !== false && window.matchMedia('(max-width: 980px)').matches) {
@@ -85,12 +93,23 @@ export function openPreview(badge, container, options = {}) {
 }
 
 export function selectInitialExample(container) {
-	const hashPath = decodeURIComponent(window.location.hash.slice(1));
+	const hashPath = getHashPath();
 	const initialBadge =
 		(hashPath && container.querySelector(`.entry-link[data-entry-path="${CSS.escape(hashPath)}"]`)) ||
 		container.querySelector('.entry-link:not(.hidden-entry)');
 
 	if (initialBadge) {
 		openPreview(initialBadge, container, { scroll: false, updateHash: false });
+	}
+}
+
+function getHashPath() {
+	const hash = window.location.hash.slice(1);
+	if (!hash) return '';
+
+	try {
+		return decodeURIComponent(hash);
+	} catch {
+		return hash;
 	}
 }

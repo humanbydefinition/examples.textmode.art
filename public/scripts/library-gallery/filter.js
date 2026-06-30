@@ -4,7 +4,7 @@ export function filterExamples(container, searchInput) {
 	const query = searchInput.value.trim().toLowerCase();
 
 	container.querySelectorAll('[data-group]').forEach((section) => {
-		const groupName = section.dataset.groupSearch;
+		const groupName = section.dataset.groupSearch ?? '';
 		let visibleInGroup = 0;
 
 		section.querySelectorAll('[data-subgroup-block]').forEach((subgroupBlock) => {
@@ -12,9 +12,9 @@ export function filterExamples(container, searchInput) {
 			let visibleInSubgroup = 0;
 
 			badges.forEach((badge) => {
-				const entryName = badge.dataset.entry;
-				const entryTitle = badge.dataset.entryTitleSearch;
-				const subgroup = badge.dataset.subgroup;
+				const entryName = badge.dataset.entry ?? '';
+				const entryTitle = badge.dataset.entryTitleSearch ?? '';
+				const subgroup = badge.dataset.subgroup ?? '';
 				const match =
 					!query ||
 					entryName.includes(query) ||
