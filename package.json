@@ -10,17 +10,42 @@
 		"prepare:sources": "node scripts/prepare-sources.mjs",
 		"sync": "node scripts/sync-latest.mjs",
 		"sync:ci": "node scripts/sync-latest.mjs",
-		"dev": "python3 -m http.server 5180 -d public",
+		"dev": "vite --host --port 5180",
+		"build": "tsc --noEmit && vite build && node scripts/postbuild.mjs",
+		"preview": "vite preview --host --port 4180",
+		"typecheck": "tsc --noEmit",
+		"lint": "eslint .",
+		"test": "vitest run",
+		"test:watch": "vitest",
+		"validate:static": "node scripts/validate-static.mjs",
 		"format": "prettier --write .",
 		"check:format": "prettier --check .",
-		"check:paths": "node scripts/check-paths.mjs",
 		"lint:md": "markdownlint-cli2",
 		"lint:md:fix": "markdownlint-cli2 --fix",
-		"check": "npm run check:format && npm run lint:md && npm run check:paths"
+		"check": "npm run check:format && npm run lint:md && npm run lint && npm run typecheck && npm run test && npm run build && npm run validate:static"
+	},
+	"dependencies": {
+		"react": "^19.2.0",
+		"react-dom": "^19.2.0"
 	},
 	"devDependencies": {
+		"@eslint/js": "^9.39.1",
+		"@testing-library/jest-dom": "^6.9.1",
+		"@testing-library/react": "^16.3.0",
+		"@types/node": "^24.10.1",
+		"@types/react": "^19.2.5",
+		"@types/react-dom": "^19.2.3",
+		"@vitejs/plugin-react": "^5.1.1",
+		"eslint": "^9.39.1",
+		"eslint-plugin-jsx-a11y": "^6.10.2",
+		"globals": "^16.5.0",
+		"jsdom": "^27.2.0",
 		"markdownlint-cli2": "^0.22.1",
 		"markdownlint-cli2-formatter-default": "^0.0.6",
-		"prettier": "^3.8.3"
+		"prettier": "^3.8.3",
+		"typescript": "^5.9.3",
+		"typescript-eslint": "^8.46.4",
+		"vite": "^7.2.4",
+		"vitest": "^4.0.8"
 	}
 }

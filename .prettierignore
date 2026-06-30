@@ -1,8 +1,7 @@
 api/
+dist/
 node_modules/
+public/
 **/*.md
-public/textmode.*/
-public/vendor/
-scripts/sync.mjs
 .markdownlint-cli2.jsonc
 .markdownlint.jsonc

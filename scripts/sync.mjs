@@ -2,9 +2,8 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { buildImportMap, hasConfiguredImport } from './lib/import-map.mjs';
 import { copyRecursive, countExamples, countSketches, removePath, writeText } from './lib/files.mjs';
-import { PUBLIC, SOURCE_ROOT, SRC_PUBLIC_ASSETS, VENDOR, projectPath } from './lib/paths.mjs';
+import { PUBLIC, SOURCE_ROOT, VENDOR, projectPath } from './lib/paths.mjs';
 import { loadRegistry, validateLibrary } from './lib/registry.mjs';
-import { renderLandingIndex, renderLibraryIndex } from './lib/templates.mjs';
 
 const STRICT = ['1', 'true'].includes((process.env.TEXTMODE_SYNC_STRICT || '').toLowerCase());
 const registry = loadRegistry();
@@ -17,7 +16,7 @@ console.log('============================');
 console.log(`source root: ${projectPath(SOURCE_ROOT)}`);
 if (STRICT) console.log('strict mode: enabled');
 
-syncPublicAssets();
+removeAppOwnedStaticFiles();
 
 const results = {};
 for (const lib of registry.libraries) {
@@ -30,13 +29,12 @@ if (targetLib && Object.keys(results).length === 0) {
 	reportProblem(`no library matched target "${targetLib}"`);
 }
 
-writeText(path.join(PUBLIC, 'index.html'), renderLandingIndex(registry, PUBLIC));
-console.log(`  landing:  generated index page`);
-
 console.log('\n============================');
 console.log('Sync complete.');
 for (const [name, result] of Object.entries(results)) {
-	console.log(`  ${name}: ${result.exampleCount} examples, ${result.sketchCount} sketches, vendor ${result.bundleCopied ? 'ok' : 'missing'}`);
+	console.log(
+		`  ${name}: ${result.exampleCount} examples, ${result.sketchCount} sketches, vendor ${result.bundleCopied ? 'ok' : 'missing'}`
+	);
 }
 
 if (failures.length > 0) {
@@ -47,12 +45,11 @@ if (failures.length > 0) {
 	process.exit(1);
 }
 
-function syncPublicAssets() {
+function removeAppOwnedStaticFiles() {
+	removePath(path.join(PUBLIC, 'index.html'));
 	removePath(path.join(PUBLIC, 'scripts', 'library-gallery'));
 	removePath(path.join(PUBLIC, 'styles'));
-	copyRecursive(path.join(SRC_PUBLIC_ASSETS, 'scripts'), path.join(PUBLIC, 'scripts'));
-	copyRecursive(path.join(SRC_PUBLIC_ASSETS, 'styles'), path.join(PUBLIC, 'styles'));
-	console.log(`  assets:   copied first-party assets`);
+	console.log(`  assets:   removed legacy app-owned static files`);
 }
 
 function syncLibrary(lib) {
@@ -71,6 +68,7 @@ function syncLibrary(lib) {
 	removePath(examplesDest);
 	copyRecursive(examplesSrc, examplesDest);
 	removeSourceGalleryAssets(examplesDest);
+	removePath(path.join(examplesDest, 'index.html'));
 
 	const sketchCount = countSketches(examplesDest);
 	console.log(`  examples: ${projectPath(examplesDest)} (${sketchCount} sketches)`);
@@ -89,7 +87,9 @@ function syncLibrary(lib) {
 		bundleCopied = true;
 		console.log(`  vendor:   ${projectPath(bundleDest)}`);
 	} else {
-		reportProblem(`${lib.name}: vendor bundle missing at ${bundleSrc} (run \`npm run build\` in ${lib.repo} first)`);
+		reportProblem(
+			`${lib.name}: vendor bundle missing at ${bundleSrc} (run \`npm run build\` in ${lib.repo} first)`
+		);
 	}
 
 	const sketchHtml = path.join(examplesDest, 'sketch.html');
@@ -100,8 +100,6 @@ function syncLibrary(lib) {
 	}
 
 	const exampleCount = countExamples(path.join(examplesDest, 'manifest.json'));
-	writeText(path.join(examplesDest, 'index.html'), renderLibraryIndex(lib));
-	console.log(`  index:    generated shared gallery page`);
 
 	return { sketchCount, exampleCount, importInjected, bundleCopied };
 }
