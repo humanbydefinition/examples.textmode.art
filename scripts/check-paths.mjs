@@ -18,6 +18,13 @@ function walk(dir) {
 
 const sketchHtmlFiles = walk(PUBLIC).filter((filePath) => filePath.endsWith('/sketch.html'));
 const failures = [];
+const expectedImports = Object.fromEntries(
+	(registry.libraries || []).map((lib) => [lib.name, `${expectedVendorPrefix}${lib.name}/index.js`])
+);
+
+if (fs.existsSync(path.join(PUBLIC, 'libraries.json'))) {
+	failures.push('public/libraries.json must not exist; use the root libraries.json registry as the source of truth.');
+}
 
 for (const filePath of sketchHtmlFiles) {
 	const html = fs.readFileSync(filePath, 'utf8');
@@ -27,8 +34,13 @@ for (const filePath of sketchHtmlFiles) {
 		failures.push(`${relativePath}: import map must not use root-absolute /vendor paths.`);
 	}
 
-	if (!html.includes(`"textmode.js": "${expectedVendorPrefix}textmode.js/index.js"`)) {
-		failures.push(`${relativePath}: import map must use ${expectedVendorPrefix} vendor paths.`);
+	const importMap = parseImportMap(html, relativePath);
+	if (!importMap) continue;
+
+	for (const [name, expectedPath] of Object.entries(expectedImports)) {
+		if (importMap.imports?.[name] !== expectedPath) {
+			failures.push(`${relativePath}: import map must map "${name}" to "${expectedPath}".`);
+		}
 	}
 }
 
@@ -70,3 +82,18 @@ if (failures.length > 0) {
 }
 
 console.log(`Checked ${sketchHtmlFiles.length} sketch import maps and ${registry.libraries.length} library indexes.`);
+
+function parseImportMap(html, relativePath) {
+	const match = html.match(/<script type="importmap">([\s\S]*?)<\/script>/);
+	if (!match) {
+		failures.push(`${relativePath}: import map is missing.`);
+		return null;
+	}
+
+	try {
+		return JSON.parse(match[1]);
+	} catch (error) {
+		failures.push(`${relativePath}: import map contains invalid JSON (${error.message}).`);
+		return null;
+	}
+}

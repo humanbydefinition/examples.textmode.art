@@ -11,20 +11,11 @@ const LIBRARIES_PATH = path.join(ROOT, 'libraries.json');
 const DEFAULT_DOCS_URL = 'https://code.textmode.art';
 const IMPRINT_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/imprint';
 const PRIVACY_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/privacy';
+const LANDING_PAGE_VERSION = 'portal-2';
 
 const IMPORT_MAP_PATH_PREFIX = '../vendor';
-const IMPORT_MAP = `<script type="importmap">
-{
-  "imports": {
-    "textmode.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.js/index.js",
-    "textmode.filters.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.filters.js/index.js",
-    "textmode.synth.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.synth.js/index.js",
-    "textmode.export.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.export.js/index.js",
-    "textmode.figlet.js": "${IMPORT_MAP_PATH_PREFIX}/textmode.figlet.js/index.js"
-  }
-}
-</script>
-`;
+const registry = JSON.parse(fs.readFileSync(LIBRARIES_PATH, 'utf8'));
+const IMPORT_MAP = buildImportMap(registry.libraries || []);
 
 const failures = [];
 
@@ -49,7 +40,7 @@ function injectImportMap(filePath) {
 	const existingImportMap = html.match(importMapPattern)?.[0];
 
 	if (existingImportMap) {
-		if (!existingImportMap.includes('"textmode.js"')) {
+		if (!hasConfiguredImport(existingImportMap)) {
 			return false;
 		}
 
@@ -65,6 +56,18 @@ function injectImportMap(filePath) {
 	html = html.replace('</head>', `\t${IMPORT_MAP}</head>`);
 	fs.writeFileSync(filePath, html, 'utf8');
 	return true;
+}
+
+function buildImportMap(libraries) {
+	const imports = Object.fromEntries(libraries.map((lib) => [lib.name, `${IMPORT_MAP_PATH_PREFIX}/${lib.name}/index.js`]));
+	return `<script type="importmap">
+${JSON.stringify({ imports }, null, 2)}
+</script>
+`;
+}
+
+function hasConfiguredImport(importMapHtml) {
+	return (registry.libraries || []).some((lib) => importMapHtml.includes(`"${lib.name}"`));
 }
 
 function syncLibrary(lib) {
@@ -195,6 +198,78 @@ function writeLibraryIndex(filePath, lib) {
 	fs.writeFileSync(filePath, html, 'utf8');
 }
 
+function writeLandingIndex(filePath, registry) {
+	const site = registry.site || {};
+	const title = site.title || 'examples.textmode.art';
+	const tagline = site.tagline || '// shared examples gallery for the textmode.js ecosystem';
+	const cardsHtml = (registry.libraries || []).map(renderLandingCard).join('\n');
+	const html = `<!doctype html>
+<html lang="en">
+\t<head>
+\t\t<meta charset="utf-8" />
+\t\t<title>${escapeHtml(title)}</title>
+\t\t<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+\t\t<link rel="preconnect" href="https://fonts.googleapis.com" />
+\t\t<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+\t\t<link
+\t\t\thref="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600&display=swap"
+\t\t\trel="stylesheet"
+\t\t/>
+\t\t<link rel="stylesheet" href="./styles/index.css" />
+\t</head>
+
+\t<body>
+\t\t<div class="examples-page">
+\t\t\t<header class="examples-header">
+\t\t\t\t<div class="examples-brand">
+\t\t\t\t\t<h1>${escapeHtml(title)}</h1>
+\t\t\t\t\t<p>${escapeHtml(tagline)}</p>
+\t\t\t\t</div>
+\t\t\t</header>
+
+\t\t\t<main id="libraries" class="landing-grid">
+${cardsHtml}
+\t\t\t</main>
+
+\t\t\t<footer class="examples-footer">
+\t\t\t\t<p>${escapeHtml(title)}</p>
+\t\t\t\t<nav class="examples-footer-links" aria-label="Project links">
+\t\t\t\t\t<a href="https://github.com/humanbydefinition" target="_blank" rel="noopener noreferrer"
+\t\t\t\t\t\t><span class="footer-link-label footer-link-label-desktop">@humanbydefinition</span
+\t\t\t\t\t\t><span class="footer-link-label footer-link-label-mobile">@hbd</span></a
+\t\t\t\t\t>
+\t\t\t\t\t<a href="https://code.textmode.art" target="_blank" rel="noopener noreferrer">docs</a>
+\t\t\t\t\t<a href="${IMPRINT_URL}">imprint</a>
+\t\t\t\t\t<a href="${PRIVACY_URL}">privacy</a>
+\t\t\t\t</nav>
+\t\t\t</footer>
+\t\t</div>
+\t</body>
+</html>
+`;
+
+	fs.writeFileSync(filePath, html, 'utf8');
+}
+
+function renderLandingCard(lib) {
+	const manifestPath = path.join(PUBLIC, lib.folder, 'manifest.json');
+	const exampleCount = fs.existsSync(manifestPath) ? countExamples(manifestPath) : null;
+	const footerHtml =
+		exampleCount === null
+			? '<span class="library-card-status">manifest missing</span>'
+			: `<span class="library-card-count-badge">${exampleCount}</span>`;
+
+	return `\t\t\t\t<a href="./${escapeHtml(lib.folder)}/?v=${LANDING_PAGE_VERSION}" class="library-card">
+\t\t\t\t\t<div class="library-card-name">${escapeHtml(lib.name)}</div>
+\t\t\t\t\t<div class="library-card-tagline">${escapeHtml(lib.tagline || '')}</div>
+\t\t\t\t\t<div class="library-card-desc">${escapeHtml(lib.description || '')}</div>
+\t\t\t\t\t<div class="library-card-footer">
+\t\t\t\t\t\t<span class="library-card-count">examples</span>
+\t\t\t\t\t\t${footerHtml}
+\t\t\t\t\t</div>
+\t\t\t\t</a>`;
+}
+
 function countSketches(dir) {
 	let count = 0;
 	const entries = fs.readdirSync(dir, { withFileTypes: true, recursive: true });
@@ -238,11 +313,6 @@ function reportProblem(message) {
 	}
 }
 
-// Copy libraries.json into public/ so the landing page can fetch it
-fs.copyFileSync(LIBRARIES_PATH, path.join(PUBLIC, 'libraries.json'));
-console.log(`  config:   copied libraries.json → public/`);
-
-const registry = JSON.parse(fs.readFileSync(LIBRARIES_PATH, 'utf8'));
 const targetLib = process.argv[2];
 
 console.log('examples.textmode.art — sync');
@@ -260,6 +330,9 @@ for (const lib of registry.libraries) {
 if (targetLib && Object.keys(results).length === 0) {
 	reportProblem(`no library matched target "${targetLib}"`);
 }
+
+writeLandingIndex(path.join(PUBLIC, 'index.html'), registry);
+console.log(`  landing:  generated index page`);
 
 console.log('\n============================');
 console.log('Sync complete.');

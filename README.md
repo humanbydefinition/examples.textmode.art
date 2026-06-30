@@ -5,7 +5,7 @@ Shared examples gallery for the [textmode.js](https://github.com/humanbydefiniti
 This site aggregates example sketches from all textmode.js add-on libraries into a single
 browsable gallery. Each library's `examples/` folder is hosted at its own URL path:
 
-- `textmode.js/` — the core library (379 examples)
+- `textmode.js/` — the core library (373 examples)
 - `textmode.filters.js/` — GPU-accelerated image filters (14 examples)
 - `textmode.synth.js/` — live synthesis engine (107 examples)
 - `textmode.export.js/` — image/video export plugin (2 examples)
@@ -15,9 +15,9 @@ browsable gallery. Each library's `examples/` folder is hosted at its own URL pa
 
 ```
 ├── public/                   # static site root (served as-is, no build step)
-│   ├── index.html            # landing page
+│   ├── index.html            # generated landing page
 │   ├── styles/               # landing page @layer CSS
-│   ├── scripts/landing/      # landing page JavaScript
+│   ├── scripts/library-gallery/ # shared generated library gallery runtime
 │   ├── vendor/               # library ESM bundles (synced from source repos)
 │   ├── textmode.js/          # synced examples (whole examples/ folder)
 │   ├── textmode.filters.js/
@@ -32,11 +32,12 @@ browsable gallery. Each library's `examples/` folder is hosted at its own URL pa
 
 ## How it works
 
-Each library's gallery page and sketch runner are copied
-verbatim from the source repo. The galleries work unchanged — they are 100% relative-import
-based. The sketch runners use browser-native [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
-to resolve bare specifiers (`textmode.js`, `textmode.filters.js`, etc.) to pre-built
-ESM bundles in `public/vendor/`.
+Each library's `examples/` folder provides its manifest, sketch runner, sketch files, and
+supporting assets. During sync, this project generates the landing page and each library
+index page from the root `libraries.json` registry, while keeping sketch pages runnable with
+browser-native [import maps](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
+that resolve bare specifiers (`textmode.js`, `textmode.filters.js`, etc.) to pre-built ESM
+bundles in `public/vendor/`.
 
 No Vite build step, no module bundling — the entire site is pure static files.
 
@@ -44,7 +45,8 @@ No Vite build step, no module bundling — the entire site is pure static files.
 
 By default, syncing fetches each configured source repository from its latest `main`
 commit, builds the library, and copies its `examples/` folder and ESM bundle into
-`public/`.
+`public/`. Source repositories are cloned into the ignored `.sources/` workspace, which is
+safe to delete locally and will be recreated by the next sync.
 
 ```bash
 npm install    # install dev tooling (Prettier, markdownlint, serve)
