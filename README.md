@@ -1,96 +1,66 @@
-# examples.textmode.art
+# examples.textmode.art (✿◠‿◠)
 
-Shared examples gallery for the [textmode.js](https://github.com/humanbydefinition/textmode.js) ecosystem.
+<!-- markdownlint-disable MD044 -->
+<div align="center">
 
-This React/Vite app aggregates example sketches from all textmode.js add-on libraries into
-a single browsable gallery. Each library's synced `examples/` folder is still hosted at
-its own URL path:
+<img alt="textmodejs_banner" src="https://github.com/user-attachments/assets/f03c2d74-7dc3-45cf-a0a5-043f9438231e" />
 
-- `textmode.js/` — the core library (373 examples)
-- `textmode.filters.js/` — GPU-accelerated image filters (14 examples)
-- `textmode.synth.js/` — live synthesis engine (107 examples)
-- `textmode.export.js/` — image/video export plugin (2 examples)
-- `textmode.figlet.js/` — FIGlet font rendering (23 examples)
+| [![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?logo=typescript&logoColor=white)](https://www.typescriptlang.org/) [![React](https://img.shields.io/badge/React-61DAFB?logo=react&logoColor=black)](https://react.dev/) [![Vite](https://img.shields.io/badge/Vite-646CFF?logo=vite&logoColor=white)](https://vitejs.dev/) | [![website](https://img.shields.io/badge/website-examples.textmode.art-646cff?logo=web&logoColor=white)](https://examples.textmode.art/) [![Discord](https://img.shields.io/discord/1357070706181017691?color=5865F2&label=Discord&logo=discord&logoColor=white)](https://discord.gg/sjrw8QXNks) [![License: AGPL v3](https://img.shields.io/badge/License-AGPL_v3-00447d?logo=gnu)](https://www.gnu.org/licenses/agpl-3.0) | [![ko-fi](https://shields.io/badge/ko--fi-donate-ff5f5f?logo=ko-fi)](https://ko-fi.com/V7V8JG2FY) [![GitHub Sponsors](https://img.shields.io/badge/sponsor-30363D?logo=GitHub-Sponsors&logoColor=#EA4AAA)](https://github.com/sponsors/humanbydefinition) |
+|:-------------|:-------------|:-------------|
 
-## Project structure
+</div>
+<!-- markdownlint-restore -->
 
-```
-├── public/                   # ignored sync output served by Vite and copied into dist/
-│   ├── vendor/               # library ESM bundles (synced from source repos)
-│   ├── textmode.js/          # synced examples (whole examples/ folder)
-│   ├── textmode.filters.js/
-│   ├── textmode.synth.js/
-│   ├── textmode.export.js/
-│   └── textmode.figlet.js/
-├── src/                      # React app, domain models, and CSS
-├── scripts/                  # source sync, build fanout, and validation scripts
-├── libraries.json            # library registry (drives sync, app routing, and CI sources)
-├── index.html                # Vite app shell
-├── vite.config.ts
-├── tsconfig.json
-├── scripts/prepare-sources.mjs # clone/build upstream sources in a temporary workspace
-├── scripts/sync.mjs          # sync examples, sketch runners, import maps, and vendor bundles
-├── scripts/postbuild.mjs     # copy the app shell to each library route in dist/
-└── scripts/validate-static.mjs # validate manifests, sketch runners, vendor bundles, and dist routes
-```
+`examples.textmode.art` is a browser-based gallery for the [textmode.js](https://github.com/humanbydefinition/textmode.js) ecosystem. It aggregates the `examples/` folders from every add-on library into one browsable site with live previews, search, and keyboard-friendly navigation.
+
+**Live site**: [examples.textmode.art](https://examples.textmode.art)
+
+## Features
+
+- **Multi-library gallery** — browse examples across all textmode.js add-ons from a single grid.
+- **Live previews** — sandboxed iframes with shared import maps; each sketch loads in its own runner.
+- **Search and filter** — case-insensitive matching across group and subgroup titles.
+- **Deep linking** — hash-based example selection for shareable URLs and back/forward support.
+- **Accessibility** — keyboard focus management, `aria-live` status regions, `aria-current` navigation, `prefers-reduced-motion` support.
 
 ## How it works
 
-Each library's `examples/` folder provides its manifest, sketch runner, sketch files, and
-supporting assets. During sync, this project copies upstream examples and vendor bundles
-into `public/`, removes obsolete source-local gallery runtimes, and injects a shared
-browser-native [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/script/type/importmap)
-into each sketch runner. The React app owns the landing page, library gallery, filtering,
-preview state, and accessibility behavior.
+Each upstream library's `examples/` folder, ESM bundle, and sketch runner are synced into gitignored `public/` via `npm run sync`. The React SPA reads each library's `manifest.json` at runtime and presents the grouped example tree. A `postbuild` step fans the compiled shell out to each `dist/<library>/index.html` route so direct GitHub Pages URLs resolve.
 
-`npm run sync` uses a temporary upstream clone/build workspace outside the project and
-removes it when syncing finishes. The only generated folder normally left in the project
-is ignored `public/`, because Vite serves it directly during local development.
-
-Vite builds the app into `dist/` and copies the static `public/` payload with it. After
-the Vite build, `scripts/postbuild.mjs` copies the app shell to each `dist/<library>/index.html`
-route so direct GitHub Pages visits keep working.
-
-## Setup
-
-By default, syncing fetches each configured source repository from its latest `main`
-commit, builds the library, and copies its `examples/` folder and ESM bundle into
-ignored `public/`. Source repositories are cloned into a temporary workspace outside the
-project and removed after the sync completes.
+## Local development
 
 ```bash
-npm install    # install dev tooling (Prettier, markdownlint, serve)
-npm run sync   # fetch latest main examples + vendor bundles from source repos
-npm run dev    # start static server at http://localhost:5180
+npm install
+npm run sync       # fetch + build upstream, populate public/
+npm run dev        # http://localhost:5180
+npm run build      # typecheck + vite build + postbuild route fan-out
 ```
 
-To sync a single library:
+To sync a single library: `npm run sync -- textmode.filters.js`.
 
-```bash
-npm run sync -- textmode.filters.js
-```
+## Contributing
 
-## Development
+Contributions to the gallery app are welcome. Examples are curated in their upstream library repositories. See [CONTRIBUTING.md](CONTRIBUTING.md) for the project structure, development workflow, testing guide, and pull request process.
 
-- `npm run dev` — start the Vite dev server
-- `npm run sync` — fetch latest upstream `main`, build, and sync all libraries
-- `npm run build` — build the Vite app into `dist/`
-- `npm run format` — format with Prettier
-- `npm run check` — format check + Markdown lint + ESLint + typecheck + tests + build + static validation
+By participating you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Run `npm run check` before opening a pull request.
 
-After publishing changes to a library's `main` branch, re-run `npm run sync` to update the
-gallery from that latest public source.
+## Tech stack
 
-## Deployment
+- **React 19** + **TypeScript 5.9** + **Vite 7**
+- **Vitest 4** + **jsdom** + **@testing-library/react**
+- **ESLint 9** + **Prettier** + **markdownlint-cli2**
+- **GitHub Pages** (auto-deployed from `main`)
 
-Push to `main`. GitHub Actions runs `npm run sync:ci`, which clones each library source
-repository from its configured `main` ref, runs `npm ci` and `npm run build`, syncs the latest
-`examples/` folders and built ESM bundles into ignored `public/`, builds the React app into
-ignored `dist/`, and deploys `dist/` to GitHub Pages at
-[examples.textmode.art](https://examples.textmode.art).
+## License
 
-## Adding a new library
+This project is licensed under the [GNU AGPL-3.0-or-later](LICENSE). It bundles and serves synced examples and vendor bundles from `textmode.synth.js` (also AGPL-3.0) and other upstream libraries, which retain their respective licenses.
 
-- Add an entry to `libraries.json`
-- Run `npm run sync -- <library-name>`
-- Run `npm run check`
+## Links
+
+- [textmode.js repository](https://github.com/humanbydefinition/textmode.js)
+- [textmode.js on npm](https://www.npmjs.com/package/textmode.js)
+- [code.textmode.art](https://code.textmode.art) — documentation and guides
+- [editor.textmode.art](https://editor.textmode.art) — browser-based code editor
+- [synth.textmode.art](https://synth.textmode.art) — live coding environment
+- [Discord community](https://discord.gg/sjrw8QXNks)
+- [ko-fi](https://ko-fi.com/V7V8JG2FY) / [GitHub Sponsors](https://github.com/sponsors/humanbydefinition)
