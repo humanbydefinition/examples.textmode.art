@@ -4,7 +4,7 @@
 	"private": true,
 	"type": "module",
 	"description": "Shared examples gallery for the textmode.js ecosystem",
-	"license": "MIT",
+	"license": "AGPL-3.0-or-later",
 	"author": "humanbydefinition",
 	"scripts": {
 		"prepare:sources": "node scripts/prepare-sources.mjs",
