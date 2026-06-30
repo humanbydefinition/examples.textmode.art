@@ -25,7 +25,7 @@ jobs:
               with:
                   node-version: 24
                   cache: npm
-            - run: npm ci
+            - run: npm ci --ignore-scripts # skip postinstall auto-sync; sync:ci is the strict gate
             - run: npm run sync:ci
             - run: npm run check
             - uses: actions/configure-pages@v4

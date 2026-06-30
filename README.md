@@ -35,7 +35,6 @@ npm run build      # typecheck + vite build + postbuild route fan-out
 ```
 
 `npm install` also runs a best-effort auto-sync via the `postinstall` hook.
-Set `TEXTMODE_SKIP_POSTINSTALL_SYNC=1` to skip it (e.g., when offline or adding a dependency).
 
 To sync a single library: `npm run sync -- textmode.filters.js`.
 
