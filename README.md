@@ -15,7 +15,7 @@ its own URL path:
 ## Project structure
 
 ```
-├── public/                   # ignored sync output copied into dist/
+├── public/                   # ignored sync output served by Vite and copied into dist/
 │   ├── vendor/               # library ESM bundles (synced from source repos)
 │   ├── textmode.js/          # synced examples (whole examples/ folder)
 │   ├── textmode.filters.js/
@@ -28,7 +28,7 @@ its own URL path:
 ├── index.html                # Vite app shell
 ├── vite.config.ts
 ├── tsconfig.json
-├── scripts/prepare-sources.mjs # clone/build upstream sources for CI deployment
+├── scripts/prepare-sources.mjs # clone/build upstream sources in a temporary workspace
 ├── scripts/sync.mjs          # sync examples, sketch runners, import maps, and vendor bundles
 ├── scripts/postbuild.mjs     # copy the app shell to each library route in dist/
 ├── scripts/validate-static.mjs # validate manifests, sketch runners, vendor bundles, and dist routes
@@ -44,6 +44,10 @@ browser-native [import map](https://developer.mozilla.org/en-US/docs/Web/HTML/El
 into each sketch runner. The React app owns the landing page, library gallery, filtering,
 preview state, and accessibility behavior.
 
+`npm run sync` uses a temporary upstream clone/build workspace outside the project and
+removes it when syncing finishes. The only generated folder normally left in the project
+is ignored `public/`, because Vite serves it directly during local development.
+
 Vite builds the app into `dist/` and copies the static `public/` payload with it. After
 the Vite build, `scripts/postbuild.mjs` copies the app shell to each `dist/<library>/index.html`
 route so direct GitHub Pages visits keep working.
@@ -52,8 +56,8 @@ route so direct GitHub Pages visits keep working.
 
 By default, syncing fetches each configured source repository from its latest `main`
 commit, builds the library, and copies its `examples/` folder and ESM bundle into
-ignored `public/`. Source repositories are cloned into the ignored `.sources/` workspace,
-which is safe to delete locally and will be recreated by the next sync.
+ignored `public/`. Source repositories are cloned into a temporary workspace outside the
+project and removed after the sync completes.
 
 ```bash
 npm install    # install dev tooling (Prettier, markdownlint, serve)
