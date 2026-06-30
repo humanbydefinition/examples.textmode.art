@@ -1,9 +1,0 @@
-@layer reset, tokens, base, layout, gallery, preview, portal, responsive;
-
-@import './tokens.css' layer(tokens);
-@import './library-index/base.css' layer(base);
-@import './library-index/layout.css' layer(layout);
-@import './library-index/gallery.css' layer(gallery);
-@import './library-index/preview.css' layer(preview);
-@import './library-index/portal.css' layer(portal);
-@import './library-index/responsive.css' layer(responsive);
