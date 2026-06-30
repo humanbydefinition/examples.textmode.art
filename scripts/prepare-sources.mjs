@@ -41,9 +41,13 @@ function prepareLibrary(lib) {
 	const source = lib.source || {};
 	const repository = source.repository;
 	const ref = source.ref || 'main';
+	const prepareMode = source.prepare || 'build';
 
 	if (!repository) {
 		fail(`${lib.name}: missing source.repository in libraries.json`);
+	}
+	if (!['build', 'prebuilt'].includes(prepareMode)) {
+		fail(`${lib.name}: unsupported source.prepare value "${prepareMode}"`);
 	}
 
 	const repoDir = path.join(SOURCE_ROOT, lib.repo);
@@ -57,9 +61,12 @@ function prepareLibrary(lib) {
 
 	const commit = run('git', ['rev-parse', 'HEAD'], repoDir).trim();
 	console.log(`  commit:  ${commit}`);
+	console.log(`  prepare: ${prepareMode}`);
 
-	run('npm', ['ci'], repoDir, { HUSKY: '0' });
-	run('npm', ['run', 'build'], repoDir, { HUSKY: '0' });
+	if (prepareMode === 'build') {
+		run('npm', ['ci'], repoDir, { HUSKY: '0' });
+		run('npm', ['run', 'build'], repoDir, { HUSKY: '0' });
+	}
 
 	const examplesDir = path.join(repoDir, 'examples');
 	const bundlePath = path.join(repoDir, lib.bundle);
@@ -81,6 +88,7 @@ function prepareLibrary(lib) {
 		name: lib.name,
 		repository,
 		ref,
+		prepare: prepareMode,
 		commit,
 		examples: path.posix.join(lib.repo, 'examples'),
 		bundle: path.posix.join(lib.repo, lib.bundle.replaceAll(path.sep, '/')),

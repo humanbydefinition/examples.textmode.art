@@ -6,15 +6,16 @@
 	"libraries": [
 		{
 			"name": "textmode.js",
-			"repo": "textmode.js-dev",
+			"repo": "textmode.js",
 			"folder": "textmode.js",
 			"bundle": "dist/textmode.esm.js",
 			"description": "DAS NEST",
 			"tagline": "// it's the only way to escape",
 			"github": "humanbydefinition/textmode.js",
 			"source": {
-				"repository": "humanbydefinition/textmode.js-dev",
-				"ref": "main"
+				"repository": "humanbydefinition/textmode.js",
+				"ref": "main",
+				"prepare": "prebuilt"
 			}
 		},
 		{
@@ -27,7 +28,8 @@
 			"github": "humanbydefinition/textmode.filters.js",
 			"source": {
 				"repository": "humanbydefinition/textmode.filters.js",
-				"ref": "main"
+				"ref": "main",
+				"prepare": "build"
 			}
 		},
 		{
@@ -40,7 +42,8 @@
 			"github": "humanbydefinition/textmode.synth.js",
 			"source": {
 				"repository": "humanbydefinition/textmode.synth.js",
-				"ref": "main"
+				"ref": "main",
+				"prepare": "build"
 			}
 		},
 		{
@@ -53,7 +56,8 @@
 			"github": "humanbydefinition/textmode.export.js",
 			"source": {
 				"repository": "humanbydefinition/textmode.export.js",
-				"ref": "main"
+				"ref": "main",
+				"prepare": "build"
 			}
 		},
 		{
@@ -66,7 +70,8 @@
 			"github": "humanbydefinition/textmode.figlet.js",
 			"source": {
 				"repository": "humanbydefinition/textmode.figlet.js",
-				"ref": "main"
+				"ref": "main",
+				"prepare": "build"
 			}
 		}
 	]
