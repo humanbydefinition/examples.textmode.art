@@ -11,9 +11,7 @@
 </div>
 <!-- markdownlint-restore -->
 
-`examples.textmode.art` is a browser-based gallery for the [textmode.js](https://github.com/humanbydefinition/textmode.js) ecosystem. It aggregates the `examples/` folders from every add-on library into one browsable site with live previews, search, and keyboard-friendly navigation.
-
-**Live site**: [examples.textmode.art](https://examples.textmode.art)
+`examples.textmode.art` is a browser-based gallery for the [textmode.js](https://github.com/humanbydefinition/textmode.js) ecosystem. It aggregates the `examples/` folders from every library in the textmode.js ecosystem into one browsable site with live previews, search, and keyboard-friendly navigation.
 
 ## Features
 
@@ -44,23 +42,13 @@ Contributions to the gallery app are welcome. Examples are curated in their upst
 
 By participating you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Run `npm run check` before opening a pull request.
 
-## Tech stack
-
-- **React 19** + **TypeScript 5.9** + **Vite 7**
-- **Vitest 4** + **jsdom** + **@testing-library/react**
-- **ESLint 9** + **Prettier** + **markdownlint-cli2**
-- **GitHub Pages** (auto-deployed from `main`)
-
 ## License
 
 This project is licensed under the [GNU AGPL-3.0-or-later](LICENSE). It bundles and serves synced examples and vendor bundles from `textmode.synth.js` (also AGPL-3.0) and other upstream libraries, which retain their respective licenses.
 
 ## Links
 
-- [textmode.js repository](https://github.com/humanbydefinition/textmode.js)
-- [textmode.js on npm](https://www.npmjs.com/package/textmode.js)
 - [code.textmode.art](https://code.textmode.art) — documentation and guides
 - [editor.textmode.art](https://editor.textmode.art) — browser-based code editor
 - [synth.textmode.art](https://synth.textmode.art) — live coding environment
 - [Discord community](https://discord.gg/sjrw8QXNks)
-- [ko-fi](https://ko-fi.com/V7V8JG2FY) / [GitHub Sponsors](https://github.com/sponsors/humanbydefinition)
