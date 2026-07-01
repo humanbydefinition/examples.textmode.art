@@ -1,6 +1,7 @@
-import { MouseEvent, useEffect, useMemo, useState } from 'react';
+import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
 import { filterExampleGroups } from '../domain/search';
 import { flattenGroups, normalizeManifest } from '../domain/manifest';
+import type { RefObject } from 'react';
 import type {
 	ExampleManifest,
 	NormalizedExample,
@@ -25,6 +26,10 @@ export function LibraryPage({ library }: LibraryPageProps) {
 	const [loadState, setLoadState] = useState<LoadState>({ status: 'loading' });
 	const [query, setQuery] = useState('');
 	const [selectedPath, setSelectedPath] = useState<string | null>(() => getHashPath());
+	const isSingleColumn = useMediaQuery('(max-width: 980px)');
+	const prefersReducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
+	const previewRef = useRef<HTMLElement | null>(null);
+	const shouldScrollToPreviewRef = useRef(false);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -78,9 +83,21 @@ export function LibraryPage({ library }: LibraryPageProps) {
 	}, [loadState, selectedPath, visibleExamples]);
 
 	function selectExample(example: NormalizedExample) {
+		if (isSingleColumn && selectedPath !== example.path) {
+			shouldScrollToPreviewRef.current = true;
+		}
 		setSelectedPath(example.path);
 		setHashPath(example.path);
 	}
+
+	useEffect(() => {
+		if (!shouldScrollToPreviewRef.current || !selectedExample || !previewRef.current) return;
+		shouldScrollToPreviewRef.current = false;
+		previewRef.current.scrollIntoView({
+			block: 'start',
+			behavior: prefersReducedMotion ? 'auto' : 'smooth',
+		});
+	}, [prefersReducedMotion, selectedExample]);
 
 	function closePreview() {
 		const previousPath = selectedPath;
@@ -134,13 +151,37 @@ export function LibraryPage({ library }: LibraryPageProps) {
 				) : null}
 				{loadState.status === 'loaded' ? (
 					<>
-						<ExamplesList
-							library={library}
-							groups={filteredGroups}
-							selectedPath={selectedExample?.path || ''}
-							onSelect={selectExample}
-						/>
-						<PreviewPanel library={library} example={selectedExample} onClose={closePreview} />
+						{isSingleColumn ? (
+							<>
+								<PreviewPanel
+									library={library}
+									example={selectedExample}
+									onClose={closePreview}
+									panelRef={previewRef}
+								/>
+								<ExamplesList
+									library={library}
+									groups={filteredGroups}
+									selectedPath={selectedExample?.path || ''}
+									onSelect={selectExample}
+								/>
+							</>
+						) : (
+							<>
+								<ExamplesList
+									library={library}
+									groups={filteredGroups}
+									selectedPath={selectedExample?.path || ''}
+									onSelect={selectExample}
+								/>
+								<PreviewPanel
+									library={library}
+									example={selectedExample}
+									onClose={closePreview}
+									panelRef={previewRef}
+								/>
+							</>
+						)}
 					</>
 				) : null}
 			</main>
@@ -254,16 +295,19 @@ function PreviewPanel({
 	library,
 	example,
 	onClose,
+	panelRef,
 }: {
 	library: NormalizedLibrary;
 	example: NormalizedExample | null;
 	onClose: () => void;
+	panelRef: RefObject<HTMLElement | null>;
 }) {
 	const isEmpty = !example;
 	const frameSrc = example ? getExampleHref(library, example.path) : 'about:blank';
 
 	return (
 		<section
+			ref={panelRef}
 			className="preview-panel"
 			data-empty={isEmpty ? 'true' : 'false'}
 			aria-label="Selected example preview"
@@ -332,4 +376,30 @@ function GalleryState({ message }: { message: string }) {
 
 function previewKicker(example: NormalizedExample) {
 	return example.subgroup ? `${example.group} / ${example.subgroup}` : example.group;
+}
+
+function useMediaQuery(query: string) {
+	const [matches, setMatches] = useState(() => getMediaQueryMatches(query));
+
+	useEffect(() => {
+		if (typeof window.matchMedia !== 'function') return;
+		const mediaQuery = window.matchMedia(query);
+		const updateMatches = () => setMatches(mediaQuery.matches);
+
+		updateMatches();
+		if (typeof mediaQuery.addEventListener === 'function') {
+			mediaQuery.addEventListener('change', updateMatches);
+			return () => mediaQuery.removeEventListener('change', updateMatches);
+		}
+
+		mediaQuery.addListener(updateMatches);
+		return () => mediaQuery.removeListener(updateMatches);
+	}, [query]);
+
+	return matches;
+}
+
+function getMediaQueryMatches(query: string) {
+	if (typeof window === 'undefined' || typeof window.matchMedia !== 'function') return false;
+	return window.matchMedia(query).matches;
 }

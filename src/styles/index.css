@@ -586,7 +586,7 @@
 
 		.examples-browser {
 			grid-template-columns: 1fr;
-			grid-template-rows: auto minmax(24rem, 62dvh);
+			grid-template-rows: minmax(24rem, 62dvh) auto;
 		}
 
 		.examples-list-panel {
