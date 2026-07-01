@@ -34,7 +34,6 @@ Distributed under the **AGPL-3.0** License. See [LICENSE](./LICENSE) for more in
 
 ## Links
 
-- [code.textmode.art](https://code.textmode.art) — documentation and guides
-- [editor.textmode.art](https://editor.textmode.art) — browser-based code editor
-- [synth.textmode.art](https://synth.textmode.art) — live coding environment
-- [Discord community](https://discord.gg/sjrw8QXNks)
+- [code.textmode.art](https://code.textmode.art) - documentation and guides
+- [editor.textmode.art](https://editor.textmode.art) - browser-based code editor
+- [synth.textmode.art](https://synth.textmode.art) - live coding environment
