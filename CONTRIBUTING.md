@@ -103,6 +103,8 @@ npm install        # installs dependencies and auto-syncs upstream examples
 │
 ├── src/
 │   ├── main.tsx                          # Entry point — renders <App /> under StrictMode
+│   ├── assets/                           # Tracked app-owned static assets processed by Vite
+│   │   └── favicons/                     # Browser favicon referenced from index.html
 │   ├── domain/                           # Framework-free business logic
 │   │   ├── types.ts                      # Shared TypeScript interfaces
 │   │   ├── registry.ts                   # Normalizes libraries.json at build time
@@ -165,7 +167,7 @@ This file drives the sync pipeline, the React app's routing, the import maps inj
 
 A best-effort variant of this pipeline also runs automatically from the `postinstall` lifecycle hook after every `npm install`. CI installs use `npm ci --ignore-scripts` to skip the hook, deferring synchronization to the explicit `npm run sync:ci` step — this avoids a redundant sync and keeps logs visible. If `postinstall` fails, `npm install` still succeeds; run `npm run sync` manually to retry.
 
-The `public/` directory is gitignored; everything is regenerated from upstream source at sync time.
+The `public/` directory is gitignored; everything is regenerated from upstream source at sync time. First-party app assets, such as the favicon or UI imagery, belong under `src/assets/` so Vite can track and hash them during build.
 
 ### Build pipeline
 
