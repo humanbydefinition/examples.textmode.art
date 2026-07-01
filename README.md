@@ -26,19 +26,11 @@ npm run dev        # http://localhost:5180
 npm run build      # typecheck + vite build + postbuild route fan-out
 ```
 
-`npm install` also runs a best-effort auto-sync via the `postinstall` hook.
-
 To sync a single library: `npm run sync -- textmode.filters.js`.
-
-## Contributing
-
-Contributions to the gallery app are welcome. Examples are curated in their upstream library repositories. See [CONTRIBUTING.md](CONTRIBUTING.md) for the project structure, development workflow, testing guide, and pull request process.
-
-By participating you agree to the [Code of Conduct](CODE_OF_CONDUCT.md). Run `npm run check` before opening a pull request.
 
 ## License
 
-This project is licensed under the [GNU AGPL-3.0-or-later](LICENSE). It bundles and serves synced examples and vendor bundles from `textmode.synth.js` (also AGPL-3.0) and other upstream libraries, which retain their respective licenses.
+Distributed under the **AGPL-3.0** License. See [LICENSE](./LICENSE) for more information.
 
 ## Links
 
