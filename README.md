@@ -13,14 +13,6 @@
 
 `examples.textmode.art` is a browser-based gallery for the [textmode.js](https://github.com/humanbydefinition/textmode.js) ecosystem. It aggregates the `examples/` folders from every library in the textmode.js ecosystem into one browsable site with live previews, search, and keyboard-friendly navigation.
 
-## Features
-
-- **Multi-library gallery** — browse examples across all textmode.js add-ons from a single grid.
-- **Live previews** — sandboxed iframes with shared import maps; each sketch loads in its own runner.
-- **Search and filter** — case-insensitive matching across group and subgroup titles.
-- **Deep linking** — hash-based example selection for shareable URLs and back/forward support.
-- **Accessibility** — keyboard focus management, `aria-live` status regions, `aria-current` navigation, `prefers-reduced-motion` support.
-
 ## How it works
 
 Each upstream library's `examples/` folder, ESM bundle, and sketch runner are synced into gitignored `public/` via `npm run sync`. The React SPA reads each library's `manifest.json` at runtime and presents the grouped example tree. A `postbuild` step fans the compiled shell out to each `dist/<library>/index.html` route so direct GitHub Pages URLs resolve.
