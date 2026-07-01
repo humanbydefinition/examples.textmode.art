@@ -60,6 +60,11 @@ describe('App', () => {
 		render(<App />);
 
 		await screen.findByRole('heading', { name: 'textmode.js' });
+		expect(screen.getByRole('link', { name: 'docs' })).toHaveAttribute(
+			'href',
+			'https://code.textmode.art/api/textmode.js/'
+		);
+
 		const rect = await screen.findByRole('link', { name: 'rect' });
 		await waitFor(() => {
 			expect(rect).toHaveAttribute('aria-current', 'true');
@@ -68,6 +73,19 @@ describe('App', () => {
 			'src',
 			'/textmode.js/sketch.html?path=Textmodifier%2Frect'
 		);
+		expect(screen.getByRole('link', { name: 'Open API docs for Textmodifier.rect' })).toHaveAttribute(
+			'href',
+			'https://code.textmode.art/api/textmode.js/classes/Textmodifier#rect'
+		);
+		expect(screen.getByRole('link', { name: 'Open API docs for Textmodifier.rect' })).toHaveAttribute(
+			'target',
+			'_blank'
+		);
+		expect(screen.getByRole('link', { name: 'Open API docs for Textmodifier.rect' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
+		expect(document.querySelector('.preview-actions')?.textContent).toBe('docssourceopenclose');
 
 		fireEvent.change(screen.getByLabelText('Filter examples'), { target: { value: 'circle' } });
 
@@ -81,6 +99,7 @@ describe('App', () => {
 		fireEvent.click(screen.getByRole('button', { name: 'close' }));
 
 		expect(screen.getAllByText('No sketch selected')).toHaveLength(2);
+		expect(screen.queryByRole('link', { name: /Open API docs for/ })).not.toBeInTheDocument();
 		expect(window.location.hash).toBe('');
 	});
 

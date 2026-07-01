@@ -57,7 +57,6 @@
 			"description": "Image, GIF, SVG, and video export plugin for textmode.js",
 			"tagline": "// no way out",
 			"license": "MIT",
-			"docsUrl": "https://code.textmode.art/docs/exporting.html",
 			"github": "humanbydefinition/textmode.export.js",
 			"source": {
 				"repository": "humanbydefinition/textmode.export.js",

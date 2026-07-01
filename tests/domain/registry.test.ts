@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { DEFAULT_DOCS_URL, normalizeRegistry, validateLibraryConfig } from '../../src/domain/registry';
+import { getDefaultLibraryDocsHref } from '../../src/domain/docs';
+import { normalizeRegistry, validateLibraryConfig } from '../../src/domain/registry';
 
 describe('registry', () => {
 	it('applies site and docs defaults', () => {
@@ -18,7 +19,7 @@ describe('registry', () => {
 		});
 
 		expect(registry.site.title).toBe('examples.textmode.art');
-		expect(registry.libraries[0].docsUrl).toBe(DEFAULT_DOCS_URL);
+		expect(registry.libraries[0].docsUrl).toBe(getDefaultLibraryDocsHref('textmode.test.js'));
 	});
 
 	it('reports missing required fields', () => {

@@ -1,7 +1,7 @@
 import registryJson from '../../libraries.json';
+import { getDefaultLibraryDocsHref } from './docs';
 import type { LibraryConfig, LibraryRegistry, NormalizedLibrary, NormalizedRegistry } from './types';
 
-export const DEFAULT_DOCS_URL = 'https://code.textmode.art';
 export const IMPRINT_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/imprint';
 export const PRIVACY_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/privacy';
 
@@ -21,7 +21,7 @@ export function normalizeRegistry(input: unknown): NormalizedRegistry {
 export function normalizeLibrary(library: LibraryConfig): NormalizedLibrary {
 	return {
 		...library,
-		docsUrl: library.docsUrl || DEFAULT_DOCS_URL,
+		docsUrl: library.docsUrl || getDefaultLibraryDocsHref(library.name),
 	};
 }
 

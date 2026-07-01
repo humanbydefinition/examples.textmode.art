@@ -1,7 +1,7 @@
 import { LIBRARIES_PATH } from './paths.mjs';
 import { readJson } from './files.mjs';
 
-export const DEFAULT_DOCS_URL = 'https://code.textmode.art';
+export const DOCS_ORIGIN = 'https://code.textmode.art';
 export const IMPRINT_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/imprint';
 export const PRIVACY_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/privacy';
 export const LANDING_PAGE_VERSION = 'portal-2';
@@ -15,9 +15,13 @@ export function loadRegistry() {
 		},
 		libraries: (registry.libraries || []).map((lib) => ({
 			...lib,
-			docsUrl: lib.docsUrl || DEFAULT_DOCS_URL,
+			docsUrl: lib.docsUrl || getDefaultLibraryDocsUrl(lib.name),
 		})),
 	};
+}
+
+export function getDefaultLibraryDocsUrl(libraryName) {
+	return `${DOCS_ORIGIN}/api/${libraryName}/`;
 }
 
 export function validateLibrary(lib) {

@@ -108,6 +108,7 @@ npm install        # installs dependencies and auto-syncs upstream examples
 │   ├── domain/                           # Framework-free business logic
 │   │   ├── types.ts                      # Shared TypeScript interfaces
 │   │   ├── registry.ts                   # Normalizes libraries.json at build time
+│   │   ├── docs.ts                       # API docs landing and example-specific link helpers
 │   │   ├── manifest.ts                   # Normalizes per-library manifest.json at runtime
 │   │   ├── routes.ts                     # Client-side path-based routing
 │   │   ├── search.ts                     # Case-insensitive group/subgroup filtering
@@ -136,6 +137,7 @@ npm install        # installs dependencies and auto-syncs upstream examples
 └── tests/
     ├── setup.ts                          # jest-dom matchers + cleanup afterEach
     ├── domain/
+    │   ├── docs.test.ts                  # API docs link mapping and manifest coverage
     │   ├── manifest.test.ts              # normalizeManifest, getExamplePath, isValidExamplePath
     │   ├── registry.test.ts              # normalizeRegistry, validateLibraryConfig
     │   ├── search.test.ts                # filterExampleGroups matching behavior
@@ -152,9 +154,12 @@ All metadata about upstream libraries lives in `libraries.json`. Each entry decl
 
 - `name`, `repo`, `folder`, `bundle` — identity and paths
 - `description`, `tagline`, `license`, `github` — display and footer data
+- `docsUrl` — optional override for non-standard docs locations; omit for standard textmode libraries so the app derives `https://code.textmode.art/api/<name>/`
 - `source.repository`, `source.ref`, `source.prepare` — how to fetch and build (`build` runs `npm ci && npm run build`; `prebuilt` uses the committed dist)
 
 This file drives the sync pipeline, the React app's routing, the import maps injected into sketch runners, CI's source list, and static validation.
+
+Example-specific API docs links are app-owned metadata in `src/domain/docs.ts`, not synced manifest data. When an upstream library adds new example owners or examples that need non-obvious targets, update the curated docs mapping in the app alongside the library registry change.
 
 ### Sync pipeline
 
@@ -192,7 +197,7 @@ This project uses **Vitest 4** with a **jsdom** environment and **@testing-libra
 
 ### Test structure
 
-- **Domain unit tests** (`tests/domain/`) — pure-function tests for `registry.ts`, `manifest.ts`, `search.ts`, and `urls.ts`. No DOM or React rendering.
+- **Domain unit tests** (`tests/domain/`) — pure-function tests for `docs.ts`, `registry.ts`, `manifest.ts`, `search.ts`, and `urls.ts`. No DOM or React rendering.
 - **UI integration test** (`tests/ui/App.test.tsx`) — renders the full `<App />` with a mocked `fetch`, covering the landing page, library browsing, search filtering, example preview, hash-based deep linking, and the 404 page. Also tests error states (e.g., a 500 manifest response).
 
 ### Running tests
@@ -244,7 +249,8 @@ Run `npm run lint:md` to check, or `npm run lint:md:fix` to auto-fix.
 
 ## Adding a new library
 
-1. **Add an entry to `libraries.json`** with all required fields (`name`, `repo`, `folder`, `bundle`, `github`, `license`, `source.repository`, `source.ref`, `source.prepare`). Set `source.prepare` to `"build"` (run `npm ci && npm run build` after cloning) or `"prebuilt"` (use the committed dist as-is). Add optional `docsUrl`, `tagline`, and `description`.
+1. **Add an entry to `libraries.json`** with all required fields (`name`, `repo`, `folder`, `bundle`, `github`, `license`, `source.repository`, `source.ref`, `source.prepare`). Set `source.prepare` to `"build"` (run `npm ci && npm run build` after cloning) or `"prebuilt"` (use the committed dist as-is). Add optional `tagline` and `description`. Add `docsUrl` only when the library's API docs do not live at `https://code.textmode.art/api/<name>/`.
+1. **Update API docs mapping** in `src/domain/docs.ts` for new example owners or example titles that need exact API targets. Keep synced manifests focused on upstream example structure.
 1. **Sync the new library**:
 
     ```bash

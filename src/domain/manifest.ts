@@ -1,8 +1,10 @@
+import { getExampleDocsHref } from './docs';
 import type {
 	ExampleManifest,
 	ManifestExample,
 	NormalizedExample,
 	NormalizedExampleGroup,
+	NormalizedLibrary,
 	NormalizedExampleSubgroup,
 } from './types';
 
@@ -36,7 +38,7 @@ export function getExampleName(examplePath: string): string {
 	return segments[segments.length - 1] || examplePath;
 }
 
-export function normalizeManifest(manifest: ExampleManifest): NormalizedExampleGroup[] {
+export function normalizeManifest(manifest: ExampleManifest, library?: NormalizedLibrary): NormalizedExampleGroup[] {
 	if (!manifest || !Array.isArray(manifest.groups)) {
 		throw new Error('Examples manifest is missing a groups array.');
 	}
@@ -51,7 +53,7 @@ export function normalizeManifest(manifest: ExampleManifest): NormalizedExampleG
 				const subgroupName = subgroup.name || null;
 				const entries = Array.isArray(subgroup.examples)
 					? subgroup.examples.map((example) =>
-							normalizeExample(example, groupName, groupDescription, subgroupName)
+							normalizeExample(example, groupName, groupDescription, subgroupName, library)
 						)
 					: [];
 				subgroups.push({ name: subgroupName, description: subgroup.description || '', entries });
@@ -60,7 +62,9 @@ export function normalizeManifest(manifest: ExampleManifest): NormalizedExampleG
 			subgroups.push({
 				name: null,
 				description: '',
-				entries: group.examples.map((example) => normalizeExample(example, groupName, groupDescription, null)),
+				entries: group.examples.map((example) =>
+					normalizeExample(example, groupName, groupDescription, null, library)
+				),
 			});
 		}
 
@@ -77,7 +81,8 @@ function normalizeExample(
 	example: ManifestExample,
 	group: string,
 	groupDescription: string,
-	subgroup: string | null
+	subgroup: string | null,
+	library?: NormalizedLibrary
 ): NormalizedExample {
 	const path = getExamplePath(example.sourceFile);
 	const name = getExampleName(path);
@@ -88,6 +93,7 @@ function normalizeExample(
 		name,
 		path,
 		title,
+		docsUrl: library ? getExampleDocsHref(library, { title }) : '',
 		group,
 		groupDescription,
 		subgroup,

@@ -37,7 +37,7 @@ export function LibraryPage({ library }: LibraryPageProps) {
 					throw new Error(`${response.status} ${response.statusText}`);
 				}
 				const manifest = (await response.json()) as ExampleManifest;
-				const groups = normalizeManifest(manifest);
+				const groups = normalizeManifest(manifest, library);
 				if (!cancelled) setLoadState({ status: 'loaded', groups });
 			} catch (error) {
 				const message = error instanceof Error ? error.message : 'Unable to load examples manifest.';
@@ -276,6 +276,15 @@ function PreviewPanel({
 				<div className="preview-actions">
 					{example ? (
 						<>
+							<a
+								className="preview-action"
+								href={example.docsUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+								aria-label={`Open API docs for ${example.title}`}
+							>
+								docs
+							</a>
 							<a
 								className="preview-action"
 								href={getExampleSourceHref(library, example.path)}

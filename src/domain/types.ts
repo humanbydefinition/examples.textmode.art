@@ -57,6 +57,7 @@ export interface NormalizedExample {
 	name: string;
 	path: string;
 	title: string;
+	docsUrl: string;
 	group: string;
 	groupDescription: string;
 	subgroup: string | null;
