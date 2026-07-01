@@ -1,5 +1,4 @@
-import { MouseEvent, useEffect, useMemo, useRef, useState } from 'react';
-import type { RefObject } from 'react';
+import { MouseEvent, useEffect, useMemo, useState } from 'react';
 import { filterExampleGroups } from '../domain/search';
 import { flattenGroups, normalizeManifest } from '../domain/manifest';
 import type {
@@ -26,7 +25,6 @@ export function LibraryPage({ library }: LibraryPageProps) {
 	const [loadState, setLoadState] = useState<LoadState>({ status: 'loading' });
 	const [query, setQuery] = useState('');
 	const [selectedPath, setSelectedPath] = useState<string | null>(() => getHashPath());
-	const closeButtonRef = useRef<HTMLButtonElement | null>(null);
 
 	useEffect(() => {
 		let cancelled = false;
@@ -82,7 +80,6 @@ export function LibraryPage({ library }: LibraryPageProps) {
 	function selectExample(example: NormalizedExample) {
 		setSelectedPath(example.path);
 		setHashPath(example.path);
-		window.setTimeout(() => closeButtonRef.current?.focus(), 0);
 	}
 
 	function closePreview() {
@@ -143,12 +140,7 @@ export function LibraryPage({ library }: LibraryPageProps) {
 							selectedPath={selectedExample?.path || ''}
 							onSelect={selectExample}
 						/>
-						<PreviewPanel
-							library={library}
-							example={selectedExample}
-							onClose={closePreview}
-							closeButtonRef={closeButtonRef}
-						/>
+						<PreviewPanel library={library} example={selectedExample} onClose={closePreview} />
 					</>
 				) : null}
 			</main>
@@ -262,12 +254,10 @@ function PreviewPanel({
 	library,
 	example,
 	onClose,
-	closeButtonRef,
 }: {
 	library: NormalizedLibrary;
 	example: NormalizedExample | null;
 	onClose: () => void;
-	closeButtonRef: RefObject<HTMLButtonElement | null>;
 }) {
 	const isEmpty = !example;
 	const frameSrc = example ? getExampleHref(library, example.path) : 'about:blank';
@@ -302,7 +292,7 @@ function PreviewPanel({
 							>
 								open
 							</a>
-							<button ref={closeButtonRef} type="button" className="preview-action" onClick={onClose}>
+							<button type="button" className="preview-action" onClick={onClose}>
 								close
 							</button>
 						</>
