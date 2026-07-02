@@ -1,7 +1,8 @@
 import { IMPRINT_URL, PRIVACY_URL } from '../domain/registry';
+import type { ReactNode } from 'react';
 
 interface PageFooterProps {
-	label: string;
+	label: ReactNode;
 	docsUrl?: string;
 	showDocsLink?: boolean;
 }
@@ -13,7 +14,7 @@ export function PageFooter({
 }: PageFooterProps) {
 	return (
 		<footer className="examples-footer">
-			<p>{label}</p>
+			<p className="examples-footer-label">{label}</p>
 			<nav className="examples-footer-links" aria-label="Project links">
 				{showDocsLink ? (
 					<a href={docsUrl} target="_blank" rel="noopener noreferrer">

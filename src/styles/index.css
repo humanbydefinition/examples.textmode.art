@@ -200,13 +200,22 @@
 		font-size: 0.72rem;
 	}
 
-	.examples-footer p {
+	.examples-footer-label {
 		min-width: 0;
 		flex: 1 1 auto;
 		margin: 0;
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
+	}
+
+	.examples-footer-label a {
+		color: var(--text-muted);
+		text-decoration: none;
+	}
+
+	.examples-footer-label a:hover {
+		color: var(--text-primary);
 	}
 
 	.examples-footer-links {

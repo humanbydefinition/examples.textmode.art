@@ -110,7 +110,8 @@ export function LibraryPage({ library }: LibraryPageProps) {
 		}, 0);
 	}
 
-	const footerLabel = library.license ? `${library.name} - ${library.license} license` : `${library.name} examples`;
+	const libraryRepositoryUrl = `https://github.com/${library.github}`;
+	const libraryLicenseUrl = `${libraryRepositoryUrl}/blob/${library.source.ref || 'main'}/LICENSE`;
 
 	return (
 		<div className="examples-page">
@@ -130,7 +131,7 @@ export function LibraryPage({ library }: LibraryPageProps) {
 						<nav className="examples-header-links" aria-label="Library links">
 							<a
 								className="examples-header-link"
-								href={`https://github.com/${library.github}`}
+								href={libraryRepositoryUrl}
 								target="_blank"
 								rel="noopener noreferrer"
 							>
@@ -206,7 +207,20 @@ export function LibraryPage({ library }: LibraryPageProps) {
 				) : null}
 			</main>
 
-			<PageFooter label={footerLabel} showDocsLink={false} />
+			<PageFooter
+				label={
+					<>
+						<a href={libraryRepositoryUrl} target="_blank" rel="noopener noreferrer">
+							{library.name}
+						</a>
+						{' - '}
+						<a href={libraryLicenseUrl} target="_blank" rel="noopener noreferrer">
+							{library.license} license
+						</a>
+					</>
+				}
+				showDocsLink={false}
+			/>
 		</div>
 	);
 }

@@ -108,6 +108,27 @@ describe('App', () => {
 		const footerLinks = within(screen.getByRole('navigation', { name: 'Project links' }));
 		expect(footerLinks.queryByRole('link', { name: 'github' })).not.toBeInTheDocument();
 		expect(footerLinks.queryByRole('link', { name: 'docs' })).not.toBeInTheDocument();
+		expect(footerLinks.getByRole('link', { name: 'imprint' })).toBeInTheDocument();
+		expect(footerLinks.getByRole('link', { name: 'privacy' })).toBeInTheDocument();
+		const footer = within(screen.getByRole('contentinfo'));
+		expect(footer.getByRole('link', { name: 'textmode.js' })).toHaveAttribute(
+			'href',
+			'https://github.com/humanbydefinition/textmode.js'
+		);
+		expect(footer.getByRole('link', { name: 'textmode.js' })).toHaveAttribute('target', '_blank');
+		expect(footer.getByRole('link', { name: 'textmode.js' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
+		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute(
+			'href',
+			'https://github.com/humanbydefinition/textmode.js/blob/main/LICENSE'
+		);
+		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute('target', '_blank');
+		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
 		expect(
 			isBefore(
 				screen.getByRole('navigation', { name: 'Library links' }),
