@@ -12,6 +12,7 @@ interface LandingPageProps {
 export function LandingPage({ registry }: LandingPageProps) {
 	const counts = useExampleCounts(registry);
 	const repositoryUrl = 'https://github.com/humanbydefinition/examples.textmode.art';
+	const licenseUrl = 'https://github.com/humanbydefinition/examples.textmode.art/blob/main/LICENSE';
 
 	return (
 		<div className="examples-page">
@@ -61,7 +62,20 @@ export function LandingPage({ registry }: LandingPageProps) {
 				))}
 			</main>
 
-			<PageFooter label={registry.site.title} showDocsLink={false} />
+			<PageFooter
+				label={
+					<>
+						<a href={repositoryUrl} target="_blank" rel="noopener noreferrer">
+							{registry.site.title}
+						</a>
+						{' - '}
+						<a href={licenseUrl} target="_blank" rel="noopener noreferrer">
+							AGPL-3.0 license
+						</a>
+					</>
+				}
+				showDocsLink={false}
+			/>
 		</div>
 	);
 }

@@ -94,6 +94,25 @@ describe('App', () => {
 		expect(
 			screen.getAllByRole('link').find((link) => link.getAttribute('href') === '/textmode.js/')
 		).toBeInTheDocument();
+		const footer = within(screen.getByRole('contentinfo'));
+		expect(footer.getByRole('link', { name: 'examples.textmode.art' })).toHaveAttribute(
+			'href',
+			'https://github.com/humanbydefinition/examples.textmode.art'
+		);
+		expect(footer.getByRole('link', { name: 'examples.textmode.art' })).toHaveAttribute('target', '_blank');
+		expect(footer.getByRole('link', { name: 'examples.textmode.art' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
+		expect(footer.getByRole('link', { name: 'AGPL-3.0 license' })).toHaveAttribute(
+			'href',
+			'https://github.com/humanbydefinition/examples.textmode.art/blob/main/LICENSE'
+		);
+		expect(footer.getByRole('link', { name: 'AGPL-3.0 license' })).toHaveAttribute('target', '_blank');
+		expect(footer.getByRole('link', { name: 'AGPL-3.0 license' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
 
 		await waitFor(() => {
 			expect(screen.getByLabelText('2 examples')).toHaveTextContent('2');
