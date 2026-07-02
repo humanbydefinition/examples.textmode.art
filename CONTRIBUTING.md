@@ -1,333 +1,109 @@
 # Contributing to examples.textmode.art
 
-First off, thank you for considering contributing to `examples.textmode.art`!
+Thanks for your interest in improving `examples.textmode.art`.
 
-This project aggregates the `examples/` folders from every library in the textmode.js ecosystem into a single browsable gallery. App and infrastructure contributions are welcome. Example sketches are curated in their upstream library repositories.
+This project is the shared examples gallery for the textmode.js ecosystem. Contributions to the app, build pipeline, documentation, tests, and library integration are welcome. Example sketches themselves usually belong in their upstream library repositories.
 
 ## Code of conduct
 
-This project and everyone participating in it is governed by the [Contributor Covenant 3.0 Code of Conduct](CODE_OF_CONDUCT.md). By participating, you are expected to uphold this code. Please report unacceptable behavior to [hello@textmode.art](mailto:hello@textmode.art).
+Participation in this project is covered by the [Contributor Covenant 3.0 Code of Conduct](CODE_OF_CONDUCT.md). Please report unacceptable behavior to [hello@textmode.art](mailto:hello@textmode.art).
 
-## Getting started
+## Before you start
 
-1. **Fork the repository** on GitHub at [humanbydefinition/examples.textmode.art](https://github.com/humanbydefinition/examples.textmode.art).
-1. **Clone your fork** locally:
-
-    ```bash
-    git clone https://github.com/YOUR_USERNAME/examples.textmode.art.git
-    cd examples.textmode.art
-    ```
-
-1. **Add the upstream remote**:
-
-    ```bash
-    git remote add upstream https://github.com/humanbydefinition/examples.textmode.art.git
-    ```
+- Check existing issues and pull requests before opening duplicate work.
+- Keep changes focused. Small, reviewable pull requests are preferred.
+- Open an issue first for large features, architectural changes, or changes that affect the sync/deploy pipeline.
+- Do not commit generated output from `public/`, `dist/`, `node_modules/`, or temporary source checkouts.
 
 ## Development setup
 
-### Prerequisites
+Requirements:
 
 - Node.js v20.8.1 or newer
 - npm
 
-### Installation
+Install dependencies:
 
 ```bash
-npm install        # installs dependencies and auto-syncs upstream examples
+npm install
 ```
 
-`npm install` also runs a best-effort auto-sync via its `postinstall` hook, populating `public/` with upstream examples and vendor bundles. If the sync fails (offline or broken upstream), install still succeeds — run `npm run sync` manually when the issue is resolved.
+`npm install` runs a best-effort sync of upstream examples into `public/`. If that sync fails because you are offline or an upstream repository is temporarily unavailable, the install still succeeds. Run `npm run sync` when the issue is resolved.
 
-### Available scripts
-
-| Script | Purpose |
-|---|---|
-| `npm run dev` | Start the Vite dev server at `http://localhost:5180` |
-| `npm run sync` | Fetch, build, and sync all upstream sources into `public/` (accepts `-- <library>` to target one) |
-| `npm run build` | TypeScript check, Vite production build, then postbuild route fan-out |
-| `npm run preview` | Serve the built `dist/` at `http://localhost:4180` |
-| `npm run typecheck` | `tsc --noEmit` |
-| `npm run lint` | ESLint across the project |
-| `npm run test` | Vitest unit and integration tests |
-| `npm run test:watch` | Vitest in watch mode |
-| `npm run validate:static` | Validate manifests, sketch runners, vendor bundles, import maps, source metadata, and dist routes |
-| `npm run format` | Apply Prettier formatting to all non-excluded files |
-| `npm run check:format` | Prettier formatting check |
-| `npm run lint:md` | markdownlint check for all Markdown files |
-| `npm run check` | **Full pre-merge gate** — format check, markdown lint, ESLint, typecheck, tests, build, and static validation |
-
-### Environment variables
-
-| Variable | Description |
-|---|---|
-| `TEXTMODE_EXAMPLES_SOURCE_ROOT` | Overrides the temporary workspace directory for upstream clone-build steps (default: OS temp) |
-| `TEXTMODE_SYNC_STRICT` | When `1`, synchronization collects all problems and exits non-zero instead of warning (set automatically by `sync-latest.mjs`) |
-
-## Project structure
-
-```text
-.
-├── .github/
-│   ├── FUNDING.yml                       # GitHub Sponsors / ko-fi / custom funding link
-│   └── workflows/
-│       └── deploy.yml                    # CI: sync:ci → check → build → deploy Pages
-├── .markdownlint.jsonc                   # markdownlint rule configuration
-├── .markdownlint-cli2.jsonc              # markdownlint globs and ignores
-├── .prettierrc                           # Prettier: tabs, single quotes, trailing commas
-├── .prettierignore                       # Prettier exclusion paths
-├── CODE_OF_CONDUCT.md                    # Contributor Covenant 3.0
-├── CONTRIBUTING.md                       # This file
-├── LICENSE                               # GNU AGPL-3.0-or-later
-├── README.md                             # Project overview and quickstart
-├── eslint.config.js                      # ESLint 9 flat config
-├── index.html                            # Vite SPA shell
-├── libraries.json                        # Library registry — single source of truth
-├── package.json                          # Dependencies, scripts, metadata
-├── tsconfig.json                         # TypeScript strict config, ES2022 target
-├── vite.config.ts                        # Vite + React plugin + Vitest config
-│
-├── public/                               # [gitignored] Synced examples and vendor bundles
-│   ├── source-metadata.json              # Provenance: commit SHAs, sketch counts per library
-│   ├── vendor/                           # Upstream ESM bundles (one subdirectory per library)
-│   │   ├── textmode.js/
-│   │   ├── textmode.filters.js/
-│   │   ├── textmode.synth.js/
-│   │   ├── textmode.export.js/
-│   │   └── textmode.figlet.js/
-│   └── <library>/                        # Per-library synced examples/ folders
-│       ├── manifest.json                 # Group → subgroup → example index
-│       ├── sketch.html                   # Standalone sketch runner with shared import map
-│       ├── sketch.js                     # Per-example sketch source files
-│       └── ...
-│
-├── src/
-│   ├── main.tsx                          # Entry point — renders <App /> under StrictMode
-│   ├── assets/                           # Tracked app-owned static assets processed by Vite
-│   │   └── favicons/                     # Browser favicon referenced from index.html
-│   ├── domain/                           # Framework-free business logic
-│   │   ├── types.ts                      # Shared TypeScript interfaces
-│   │   ├── registry.ts                   # Normalizes libraries.json at build time
-│   │   ├── docs.ts                       # API docs landing and example-specific link helpers
-│   │   ├── manifest.ts                   # Normalizes per-library manifest.json at runtime
-│   │   ├── routes.ts                     # Client-side path-based routing
-│   │   ├── search.ts                     # Case-insensitive group/subgroup filtering
-│   │   └── urls.ts                       # Link builders and hash-based state helpers
-│   ├── styles/
-│   │   └── index.css                     # All CSS via @layer (tokens, layout, landing, etc.)
-│   └── ui/
-│       ├── App.tsx                       # Root router — landing, library, or 404
-│       ├── LandingPage.tsx               # Library card grid with async example count
-│       ├── LibraryPage.tsx               # Example browser with filter, preview, and deep links
-│       ├── NotFoundPage.tsx              # 404 page for unknown library paths
-│       └── PageFooter.tsx                # Shared footer with ecosystem links
-│
-├── scripts/
-│   ├── lib/                              # Shared script utilities
-│   │   ├── files.mjs                     # readJson / writeJson helpers
-│   │   ├── import-map.mjs                # Builds the shared import map injected into sketch.html
-│   │   ├── paths.mjs                     # Root, public, vendor, dist, and source path constants
-│   │   └── registry.mjs                  # Script-side registry loader and validator
-│   ├── prepare-sources.mjs               # Clone + npm ci/build upstream repositories
-│   ├── sync.mjs                          # Copy examples + vendor bundles + inject import maps
-│   ├── sync-latest.mjs                   # Orchestrator: temp workspace → prepare → sync → cleanup
-│   ├── postbuild.mjs                     # Fan out dist/index.html to each dist/<library>/index.html
-│   └── validate-static.mjs               # Post-build validation of all synced artifacts
-│
-└── tests/
-    ├── setup.ts                          # jest-dom matchers + cleanup afterEach
-    ├── domain/
-    │   ├── docs.test.ts                  # API docs link mapping and manifest coverage
-    │   ├── manifest.test.ts              # normalizeManifest, getExamplePath, isValidExamplePath
-    │   ├── registry.test.ts              # normalizeRegistry, validateLibraryConfig
-    │   ├── search.test.ts                # filterExampleGroups matching behavior
-    │   └── urls.test.ts                  # getLibraryHref, getExampleHref, getExampleSourceHref
-    └── ui/
-        └── App.test.tsx                  # Full SPA integration test (landing, library, 404)
-```
-
-## How sync and build work
-
-### Single source of truth
-
-All metadata about upstream libraries lives in `libraries.json`. Each entry declares:
-
-- `name`, `repo`, `folder`, `bundle` — identity and paths
-- `description`, `tagline`, `license`, `github` — display and footer data
-- `docsUrl` — optional override for non-standard docs locations; omit for standard textmode libraries so the app derives `https://code.textmode.art/api/<name>/`
-- `source.repository`, `source.ref`, `source.prepare` — how to fetch and build (`build` runs `npm ci && npm run build`; `prebuilt` uses the committed dist)
-
-This file drives the sync pipeline, the React app's routing, the import maps injected into sketch runners, CI's source list, and static validation.
-
-Example-specific API docs links are app-owned metadata in `src/domain/docs.ts`, not synced manifest data. When an upstream library adds new example owners or examples that need non-obvious targets, update the curated docs mapping in the app alongside the library registry change.
-
-### Sync pipeline
-
-`npm run sync` → `scripts/sync-latest.mjs` orchestrates three steps:
-
-1. **Create a temporary workspace** in the OS temp directory.
-1. **`scripts/prepare-sources.mjs`** — for each library (or a single targeted one via `npm run sync -- <name>`), `git clone --depth 1 --branch <ref>` the upstream repository, optionally run `npm ci && npm run build`, and record provenance (commit SHA, sketch count) into `public/source-metadata.json`.
-1. **`scripts/sync.mjs`** — clears app-owned legacy static assets from `public/`, copies the upstream `examples/` folder into `public/<folder>/`, removes the source-local gallery runtime, copies the built ESM bundle to `public/vendor/<name>/index.js`, and injects the shared import map (mapping every library name to `../vendor/<name>/index.js`) into each `sketch.html`.
-1. **Cleanup** — the temp workspace is removed.
-
-A best-effort variant of this pipeline also runs automatically from the `postinstall` lifecycle hook after every `npm install`. CI installs use `npm ci --ignore-scripts` to skip the hook, deferring synchronization to the explicit `npm run sync:ci` step — this avoids a redundant sync and keeps logs visible. If `postinstall` fails, `npm install` still succeeds; run `npm run sync` manually to retry.
-
-The `public/` directory is gitignored; everything is regenerated from upstream source at sync time. First-party app assets, such as the favicon or UI imagery, belong under `src/assets/` so Vite can track and hash them during build.
-
-### Build pipeline
-
-`npm run build` runs three steps:
-
-1. `tsc --noEmit` — TypeScript type check.
-1. `vite build` — bundles the React SPA into `dist/` and copies `public/` alongside it.
-1. `scripts/postbuild.mjs` — copies `dist/index.html` to `dist/<library>/index.html` for every registered library. This ensures direct hits to `https://examples.textmode.art/<library>/` return the SPA shell instead of a GitHub Pages 404.
-
-### Sketch runner
-
-Each library's `sketch.html` is a standalone page that:
-
-- Loads the shared import map (all five `textmode.*` libraries mapped to vendor bundles).
-- Reads `?path=` from the URL query, validates path segments with `^[A-Za-z0-9_.-]+$`, and rejects traversal attempts.
-- Sets `<base href="./<path>/">` and dynamically injects `<script src="./sketch.js">`.
-- Exposes `window.textmode`, `window.TextmodeErrorLevel`, and `window.__TEXTMODE_EXAMPLE_PATH__`.
-
-## Testing
-
-This project uses **Vitest 4** with a **jsdom** environment and **@testing-library/react**.
-
-### Test structure
-
-- **Domain unit tests** (`tests/domain/`) — pure-function tests for `docs.ts`, `registry.ts`, `manifest.ts`, `search.ts`, and `urls.ts`. No DOM or React rendering.
-- **UI integration test** (`tests/ui/App.test.tsx`) — renders the full `<App />` with a mocked `fetch`, covering the landing page, library browsing, search filtering, example preview, hash-based deep linking, and the 404 page. Also tests error states (e.g., a 500 manifest response).
-
-### Running tests
+Start the local app:
 
 ```bash
-npm test              # single run
-npm run test:watch    # watch mode
+npm run dev
 ```
 
-Always run `npm run check` before opening a pull request — it includes the full test suite plus format, lint, typecheck, build, and static validation.
+The dev server runs at `http://localhost:5180`.
 
-## Code style
+## Common commands
 
-### Prettier
+| Command | Purpose |
+|---|---|
+| `npm run dev` | Start the Vite dev server |
+| `npm run sync` | Refresh upstream examples and vendor bundles |
+| `npm run sync -- <library>` | Refresh one library |
+| `npm run test` | Run Vitest |
+| `npm run lint` | Run ESLint |
+| `npm run typecheck` | Run TypeScript without emitting files |
+| `npm run build` | Build the production site |
+| `npm run validate:static` | Validate synced static assets and routes |
+| `npm run check` | Run the full pre-merge gate |
 
-This project uses Prettier (configured in `.prettierrc`):
+## Project conventions
 
-- Tabs for indentation, tab width 4
-- Single quotes
-- Semicolons
-- Trailing commas where valid (ES5 style)
-- Print width 120
-- LF line endings
+- `libraries.json` is the source of truth for registered libraries.
+- Synced upstream assets live in gitignored `public/` and are regenerated with `npm run sync`.
+- App-owned source lives in `src/`.
+- Framework-free domain logic belongs in `src/domain/`.
+- React UI belongs in `src/ui/`.
+- Tests live under `tests/domain/` and `tests/ui/`.
+- Example-specific docs link mapping lives in `src/domain/docs.ts`.
 
-Run `npm run format` before committing.
+Style is enforced by Prettier, ESLint, TypeScript, and markdownlint. Run `npm run check` before opening a pull request.
 
-### ESLint
+## Adding or updating a library
 
-ESLint 9 flat config enforces `@eslint/js` recommended rules, `typescript-eslint` recommended rules, and `eslint-plugin-jsx-a11y` recommended rules. Use `npm run lint` to check.
-
-### TypeScript
-
-Strict mode is enabled. Prefer `const` over `let`, prefix unused variables with `_`, and keep the `src/domain/` layer framework-free.
-
-### Markdown
-
-Markdown is linted with `markdownlint-cli2` (see `.markdownlint.jsonc`):
-
-- Use ATX-style headings (`##`), not closed (`## foo ##`).
-- Use `-` for unordered lists and `1.` for ordered lists (all items must use `1.`; Markdown auto-numbers them).
-- Nest list items with 4-space indent.
-- Fenced code blocks with backticks.
-- Italic with `_underscore_`, bold with `**asterisks**`.
-- Tables require leading and trailing pipes on every row.
-
-Proper nouns must use their ecosystem-cased form: `textmode.js`, `Prettier`, `ESLint`, `TypeScript`, `Vite`, `GitHub`, `Node.js`, `HTML`, `CSS`, `JavaScript`, `WebGL`, `GLSL`, `FIGlet`, `PETSCII`.
-
-Run `npm run lint:md` to check, or `npm run lint:md:fix` to auto-fix.
-
-## Adding a new library
-
-1. **Add an entry to `libraries.json`** with all required fields (`name`, `repo`, `folder`, `bundle`, `github`, `license`, `source.repository`, `source.ref`, `source.prepare`). Set `source.prepare` to `"build"` (run `npm ci && npm run build` after cloning) or `"prebuilt"` (use the committed dist as-is). Add optional `tagline` and `description`. Add `docsUrl` only when the library's API docs do not live at `https://code.textmode.art/api/<name>/`.
-1. **Update API docs mapping** in `src/domain/docs.ts` for new example owners or example titles that need exact API targets. Keep synced manifests focused on upstream example structure.
-1. **Sync the new library**:
+1. Update `libraries.json` with the library metadata.
+1. Add or update docs mappings in `src/domain/docs.ts` when examples need specific API targets.
+1. Sync the library:
 
     ```bash
     npm run sync -- <library-name>
     ```
 
-1. **Run the full check**:
+1. Run the full check:
 
     ```bash
     npm run check
     ```
 
-    The postbuild step automatically fans the app shell into `dist/<folder>/index.html` for the new library route. Static validation verifies the manifest, sketch runner, import map, vendor bundle, source metadata, and dist route.
+## Pull requests
 
-Because the import map is shared across all sketch runners and lists every library, adding a library automatically makes it importable from every other library's `sketch.html` after the next sync.
+1. Fork the repository and create a branch from `main`.
+1. Make a focused change with tests or documentation updates where appropriate.
+1. Run `npm run check`.
+1. Open a pull request with a clear title and description.
+1. Link related issues and call out any follow-up work.
 
-## Deployment
-
-Pushing to `main` triggers the [GitHub Actions deploy workflow](.github/workflows/deploy.yml):
-
-1. `npm ci`
-1. `npm run sync:ci` — clones each upstream library at its configured `main` ref, builds as needed, syncs examples and vendor bundles, strict mode.
-1. `npm run check` — the full pre-merge gate.
-1. `actions/configure-pages` + `actions/upload-pages-artifact` (upload `dist/`) + `actions/deploy-pages`.
-
-Everything in `public/` and `dist/` is gitignored and fully regenerated at deploy time — no checked-in build artifacts.
-
-## Pull request process
-
-1. **Create a feature branch** from `main`:
-
-    ```bash
-    git checkout -b feat/your-change
-    ```
-
-1. **Make your changes** following the guidelines above.
-1. **Run `npm run check`** — the full gate must pass locally.
-1. **Commit your changes** with a clear message:
-
-    ```bash
-    git commit -m "feat: add support for ..."
-    ```
-
-    This project uses [Conventional Commits](https://www.conventionalcommits.org/):
-
-    | Type | Usage |
-    |---|---|
-    | `feat` | New feature for the user |
-    | `fix` | Bug fix |
-    | `docs` | Documentation changes |
-    | `style` | Code style (formatting, etc.) |
-    | `refactor` | Code refactoring |
-    | `perf` | Performance improvement |
-    | `test` | Adding or updating tests |
-    | `build` | Build system or dependency changes |
-    | `ci` | CI configuration or scripts |
-    | `chore` | Maintenance tasks |
-    | `revert` | Revert a previous change |
-
-    Keep commit headers under 100 characters.
-1. **Push to your fork** and open a Pull Request on GitHub with a clear title and description. Reference any related issues.
-1. **Wait for review** — maintainers will review your PR and may suggest changes.
+Use clear commit messages. Conventional Commit prefixes such as `feat:`, `fix:`, `docs:`, `test:`, `refactor:`, `build:`, and `chore:` are encouraged.
 
 ## Reporting bugs
 
-Found a bug? Please open an issue with:
+Please include:
 
-1. A clear title describing the problem.
-1. Steps to reproduce the issue.
-1. Expected behavior vs. actual behavior.
-1. Environment info (browser, OS).
-1. Screenshots or screen recordings if applicable.
+- A short description of the issue.
+- Steps to reproduce it.
+- Expected and actual behavior.
+- Browser and operating system details when relevant.
+- Screenshots, recordings, or console output when they help explain the problem.
 
 ## Suggesting features
 
-Have an idea? We'd love to hear it!
+Feature requests are welcome. Please describe the user need, the proposed behavior, and any tradeoffs or alternatives you have considered.
 
-1. Check existing issues to avoid duplicates.
-1. Open a new issue with a clear description.
-1. Explain how the feature would be used and why it would benefit the gallery.
+## License
+
+By contributing, you agree that your contributions will be licensed under this project's [AGPL-3.0 license](LICENSE).
