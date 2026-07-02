@@ -229,10 +229,6 @@
 		color: var(--text-primary);
 	}
 
-	.footer-link-label-mobile {
-		display: none;
-	}
-
 	.not-found-panel {
 		display: grid;
 		align-content: center;
@@ -685,13 +681,6 @@
 			flex: 1 1 auto;
 		}
 
-		.footer-link-label-desktop {
-			display: none;
-		}
-
-		.footer-link-label-mobile {
-			display: inline;
-		}
 	}
 
 	@media (prefers-reduced-motion: reduce) {

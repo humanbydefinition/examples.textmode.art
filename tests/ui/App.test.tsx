@@ -58,6 +58,19 @@ describe('App', () => {
 		render(<App />);
 
 		expect(screen.getByRole('heading', { name: 'examples.textmode.art' })).toBeInTheDocument();
+		const siteLinks = within(screen.getByRole('navigation', { name: 'Site links' }));
+		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
+			'href',
+			'https://code.textmode.art'
+		);
+		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('target', '_blank');
+		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
+		const footerLinks = within(screen.getByRole('navigation', { name: 'Project links' }));
+		expect(footerLinks.queryByRole('link', { name: 'docs' })).not.toBeInTheDocument();
+		expect(screen.queryByRole('link', { name: '@humanbydefinition' })).not.toBeInTheDocument();
 		expect(
 			screen.getAllByRole('link').find((link) => link.getAttribute('href') === '/textmode.js/')
 		).toBeInTheDocument();

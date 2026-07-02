@@ -15,10 +15,6 @@ export function PageFooter({
 		<footer className="examples-footer">
 			<p>{label}</p>
 			<nav className="examples-footer-links" aria-label="Project links">
-				<a href="https://github.com/humanbydefinition" target="_blank" rel="noopener noreferrer">
-					<span className="footer-link-label footer-link-label-desktop">@humanbydefinition</span>
-					<span className="footer-link-label footer-link-label-mobile">@hbd</span>
-				</a>
 				{showDocsLink ? (
 					<a href={docsUrl} target="_blank" rel="noopener noreferrer">
 						docs

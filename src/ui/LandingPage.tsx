@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { DOCS_ORIGIN } from '../domain/docs';
 import { normalizeManifest } from '../domain/manifest';
 import type { ExampleManifest, NormalizedRegistry } from '../domain/types';
 import { getLibraryHref } from '../domain/urls';
@@ -14,9 +15,21 @@ export function LandingPage({ registry }: LandingPageProps) {
 	return (
 		<div className="examples-page">
 			<header className="examples-header">
-				<div className="examples-brand">
-					<h1>{registry.site.title}</h1>
-					<p>{registry.site.tagline}</p>
+				<div className="examples-header-primary">
+					<div className="examples-brand">
+						<h1>{registry.site.title}</h1>
+						<p>{registry.site.tagline}</p>
+					</div>
+					<nav className="examples-header-links" aria-label="Site links">
+						<a
+							className="examples-header-link"
+							href={DOCS_ORIGIN}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							docs
+						</a>
+					</nav>
 				</div>
 			</header>
 
@@ -39,7 +52,7 @@ export function LandingPage({ registry }: LandingPageProps) {
 				))}
 			</main>
 
-			<PageFooter label={registry.site.title} />
+			<PageFooter label={registry.site.title} showDocsLink={false} />
 		</div>
 	);
 }
