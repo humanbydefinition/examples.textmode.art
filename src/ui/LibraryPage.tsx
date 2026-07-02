@@ -126,21 +126,41 @@ export function LibraryPage({ library }: LibraryPageProps) {
 						<h1>{library.name}</h1>
 						<p>{library.tagline || library.description || ''}</p>
 					</div>
-					<label className="examples-search" htmlFor="search">
-						<span className="examples-search-icon" aria-hidden="true">
-							/
-						</span>
-						<input
-							id="search"
-							type="text"
-							placeholder="filter examples..."
-							aria-label="Filter examples"
-							autoComplete="off"
-							spellCheck={false}
-							value={query}
-							onChange={(event) => setQuery(event.target.value)}
-						/>
-					</label>
+					<div className="examples-header-controls">
+						<nav className="examples-header-links" aria-label="Library links">
+							<a
+								className="examples-header-link"
+								href={`https://github.com/${library.github}`}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								github
+							</a>
+							<a
+								className="examples-header-link"
+								href={library.docsUrl}
+								target="_blank"
+								rel="noopener noreferrer"
+							>
+								docs
+							</a>
+						</nav>
+						<label className="examples-search" htmlFor="search">
+							<span className="examples-search-icon" aria-hidden="true">
+								/
+							</span>
+							<input
+								id="search"
+								type="text"
+								placeholder="filter examples..."
+								aria-label="Filter examples"
+								autoComplete="off"
+								spellCheck={false}
+								value={query}
+								onChange={(event) => setQuery(event.target.value)}
+							/>
+						</label>
+					</div>
 				</div>
 			</header>
 
@@ -186,11 +206,7 @@ export function LibraryPage({ library }: LibraryPageProps) {
 				) : null}
 			</main>
 
-			<PageFooter
-				label={footerLabel}
-				githubUrl={`https://github.com/${library.github}`}
-				docsUrl={library.docsUrl}
-			/>
+			<PageFooter label={footerLabel} showDocsLink={false} />
 		</div>
 	);
 }

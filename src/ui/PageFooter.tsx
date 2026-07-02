@@ -2,11 +2,15 @@ import { IMPRINT_URL, PRIVACY_URL } from '../domain/registry';
 
 interface PageFooterProps {
 	label: string;
-	githubUrl?: string;
 	docsUrl?: string;
+	showDocsLink?: boolean;
 }
 
-export function PageFooter({ label, githubUrl, docsUrl = 'https://code.textmode.art' }: PageFooterProps) {
+export function PageFooter({
+	label,
+	docsUrl = 'https://code.textmode.art',
+	showDocsLink = true,
+}: PageFooterProps) {
 	return (
 		<footer className="examples-footer">
 			<p>{label}</p>
@@ -15,14 +19,11 @@ export function PageFooter({ label, githubUrl, docsUrl = 'https://code.textmode.
 					<span className="footer-link-label footer-link-label-desktop">@humanbydefinition</span>
 					<span className="footer-link-label footer-link-label-mobile">@hbd</span>
 				</a>
-				{githubUrl ? (
-					<a href={githubUrl} target="_blank" rel="noopener noreferrer">
-						github
+				{showDocsLink ? (
+					<a href={docsUrl} target="_blank" rel="noopener noreferrer">
+						docs
 					</a>
 				) : null}
-				<a href={docsUrl} target="_blank" rel="noopener noreferrer">
-					docs
-				</a>
 				<a href={IMPRINT_URL} target="_blank" rel="noopener noreferrer">
 					imprint
 				</a>

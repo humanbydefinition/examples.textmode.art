@@ -1,4 +1,4 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react';
+import { fireEvent, render, screen, waitFor, within } from '@testing-library/react';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { App } from '../../src/ui/App';
 
@@ -73,10 +73,34 @@ describe('App', () => {
 		render(<App />);
 
 		await screen.findByRole('heading', { name: 'textmode.js' });
-		expect(screen.getByRole('link', { name: 'docs' })).toHaveAttribute(
+		const libraryLinks = within(screen.getByRole('navigation', { name: 'Library links' }));
+		expect(libraryLinks.getByRole('link', { name: 'github' })).toHaveAttribute(
+			'href',
+			'https://github.com/humanbydefinition/textmode.js'
+		);
+		expect(libraryLinks.getByRole('link', { name: 'github' })).toHaveAttribute('target', '_blank');
+		expect(libraryLinks.getByRole('link', { name: 'github' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
+		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
 			'href',
 			'https://code.textmode.art/api/textmode.js/'
 		);
+		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('target', '_blank');
+		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
+		const footerLinks = within(screen.getByRole('navigation', { name: 'Project links' }));
+		expect(footerLinks.queryByRole('link', { name: 'github' })).not.toBeInTheDocument();
+		expect(footerLinks.queryByRole('link', { name: 'docs' })).not.toBeInTheDocument();
+		expect(
+			isBefore(
+				screen.getByRole('navigation', { name: 'Library links' }),
+				screen.getByLabelText('Filter examples')
+			)
+		).toBe(true);
 
 		const rect = await screen.findByRole('link', { name: 'rect' });
 		expect(
