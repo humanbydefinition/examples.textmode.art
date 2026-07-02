@@ -64,19 +64,10 @@ describe('App', () => {
 			'https://github.com/humanbydefinition/examples.textmode.art'
 		);
 		expect(siteLinks.getByRole('link', { name: 'github' })).toHaveAttribute('target', '_blank');
-		expect(siteLinks.getByRole('link', { name: 'github' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
-		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
-			'href',
-			'https://code.textmode.art'
-		);
+		expect(siteLinks.getByRole('link', { name: 'github' })).toHaveAttribute('rel', 'noopener noreferrer');
+		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('href', 'https://code.textmode.art');
 		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('target', '_blank');
-		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
+		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('rel', 'noopener noreferrer');
 		const footerLinks = within(screen.getByRole('navigation', { name: 'Project links' }));
 		expect(footerLinks.queryByRole('link', { name: 'docs' })).not.toBeInTheDocument();
 		expect(screen.queryByRole('link', { name: '@humanbydefinition' })).not.toBeInTheDocument();
@@ -101,19 +92,13 @@ describe('App', () => {
 			'https://github.com/humanbydefinition/textmode.js'
 		);
 		expect(libraryLinks.getByRole('link', { name: 'github' })).toHaveAttribute('target', '_blank');
-		expect(libraryLinks.getByRole('link', { name: 'github' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
+		expect(libraryLinks.getByRole('link', { name: 'github' })).toHaveAttribute('rel', 'noopener noreferrer');
 		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
 			'href',
 			'https://code.textmode.art/api/textmode.js/'
 		);
 		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('target', '_blank');
-		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
+		expect(libraryLinks.getByRole('link', { name: 'docs' })).toHaveAttribute('rel', 'noopener noreferrer');
 		const footerLinks = within(screen.getByRole('navigation', { name: 'Project links' }));
 		expect(footerLinks.queryByRole('link', { name: 'github' })).not.toBeInTheDocument();
 		expect(footerLinks.queryByRole('link', { name: 'docs' })).not.toBeInTheDocument();
@@ -125,19 +110,13 @@ describe('App', () => {
 			'https://github.com/humanbydefinition/textmode.js'
 		);
 		expect(footer.getByRole('link', { name: 'textmode.js' })).toHaveAttribute('target', '_blank');
-		expect(footer.getByRole('link', { name: 'textmode.js' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
+		expect(footer.getByRole('link', { name: 'textmode.js' })).toHaveAttribute('rel', 'noopener noreferrer');
 		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute(
 			'href',
 			'https://github.com/humanbydefinition/textmode.js/blob/main/LICENSE'
 		);
 		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute('target', '_blank');
-		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
+		expect(footer.getByRole('link', { name: 'MIT license' })).toHaveAttribute('rel', 'noopener noreferrer');
 		expect(
 			isBefore(
 				screen.getByRole('navigation', { name: 'Library links' }),

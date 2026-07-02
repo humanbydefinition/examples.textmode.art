@@ -7,11 +7,7 @@ interface PageFooterProps {
 	showDocsLink?: boolean;
 }
 
-export function PageFooter({
-	label,
-	docsUrl = 'https://code.textmode.art',
-	showDocsLink = true,
-}: PageFooterProps) {
+export function PageFooter({ label, docsUrl = 'https://code.textmode.art', showDocsLink = true }: PageFooterProps) {
 	return (
 		<footer className="examples-footer">
 			<p className="examples-footer-label">{label}</p>
