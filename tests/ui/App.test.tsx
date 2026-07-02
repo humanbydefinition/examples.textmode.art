@@ -109,10 +109,7 @@ describe('App', () => {
 			'https://github.com/humanbydefinition/examples.textmode.art/blob/main/LICENSE'
 		);
 		expect(footer.getByRole('link', { name: 'AGPL-3.0 license' })).toHaveAttribute('target', '_blank');
-		expect(footer.getByRole('link', { name: 'AGPL-3.0 license' })).toHaveAttribute(
-			'rel',
-			'noopener noreferrer'
-		);
+		expect(footer.getByRole('link', { name: 'AGPL-3.0 license' })).toHaveAttribute('rel', 'noopener noreferrer');
 
 		await waitFor(() => {
 			expect(screen.getByLabelText('2 examples')).toHaveTextContent('2');
