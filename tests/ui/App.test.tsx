@@ -59,6 +59,15 @@ describe('App', () => {
 
 		expect(screen.getByRole('heading', { name: 'examples.textmode.art' })).toBeInTheDocument();
 		const siteLinks = within(screen.getByRole('navigation', { name: 'Site links' }));
+		expect(siteLinks.getByRole('link', { name: 'github' })).toHaveAttribute(
+			'href',
+			'https://github.com/humanbydefinition/examples.textmode.art'
+		);
+		expect(siteLinks.getByRole('link', { name: 'github' })).toHaveAttribute('target', '_blank');
+		expect(siteLinks.getByRole('link', { name: 'github' })).toHaveAttribute(
+			'rel',
+			'noopener noreferrer'
+		);
 		expect(siteLinks.getByRole('link', { name: 'docs' })).toHaveAttribute(
 			'href',
 			'https://code.textmode.art'

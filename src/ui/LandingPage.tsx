@@ -11,6 +11,7 @@ interface LandingPageProps {
 
 export function LandingPage({ registry }: LandingPageProps) {
 	const counts = useExampleCounts(registry);
+	const repositoryUrl = 'https://github.com/humanbydefinition/examples.textmode.art';
 
 	return (
 		<div className="examples-page">
@@ -21,6 +22,14 @@ export function LandingPage({ registry }: LandingPageProps) {
 						<p>{registry.site.tagline}</p>
 					</div>
 					<nav className="examples-header-links" aria-label="Site links">
+						<a
+							className="examples-header-link"
+							href={repositoryUrl}
+							target="_blank"
+							rel="noopener noreferrer"
+						>
+							github
+						</a>
 						<a
 							className="examples-header-link"
 							href={DOCS_ORIGIN}
