@@ -1,7 +1,15 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { buildImportMap, hasConfiguredImport } from './lib/import-map.mjs';
-import { copyRecursive, countExamples, countSketches, removePath, writeText } from './lib/files.mjs';
+import {
+	copyRecursive,
+	countExamples,
+	countSketches,
+	readJson,
+	removePath,
+	walkFiles,
+	writeText,
+} from './lib/files.mjs';
 import { PUBLIC, SOURCE_ROOT, VENDOR, projectPath } from './lib/paths.mjs';
 import { loadRegistry, validateLibrary } from './lib/registry.mjs';
 
@@ -99,7 +107,11 @@ function syncLibrary(lib) {
 		if (importInjected) console.log(`  importmap: injected into sketch.html`);
 	}
 
-	const exampleCount = countExamples(path.join(examplesDest, 'manifest.json'));
+	const manifestPath = path.join(examplesDest, 'manifest.json');
+	const auxiliaryFileCount = enrichManifestExamples(manifestPath, examplesDest);
+	if (auxiliaryFileCount > 0) console.log(`  metadata: ${auxiliaryFileCount} auxiliary files`);
+
+	const exampleCount = countExamples(manifestPath);
 
 	return { sketchCount, exampleCount, importInjected, bundleCopied };
 }
@@ -136,6 +148,66 @@ function injectImportMap(filePath) {
 	html = html.replace('</head>', `\t${importMap}</head>`);
 	writeText(filePath, html);
 	return true;
+}
+
+function enrichManifestExamples(manifestPath, examplesDest) {
+	if (!fs.existsSync(manifestPath)) return 0;
+
+	const manifest = readJson(manifestPath);
+	let auxiliaryFileCount = 0;
+	for (const example of getManifestExamples(manifest)) {
+		const sketchRelativePath = getSketchRelativePath(example.sourceFile);
+		if (!sketchRelativePath) continue;
+
+		const exampleDir = path.dirname(path.join(examplesDest, sketchRelativePath));
+		if (!fs.existsSync(exampleDir)) continue;
+
+		const files = walkFiles(exampleDir)
+			.filter((filePath) => path.basename(filePath) !== 'sketch.js')
+			.map((filePath) => ({
+				path: path.relative(exampleDir, filePath).split(path.sep).join('/'),
+				type: getAuxiliaryFileType(filePath),
+			}))
+			.sort((a, b) => a.path.localeCompare(b.path));
+
+		if (files.length > 0) {
+			example.files = files;
+			auxiliaryFileCount += files.length;
+		} else {
+			delete example.files;
+		}
+	}
+
+	writeText(manifestPath, `${JSON.stringify(manifest, null, '\t')}\n`);
+	return auxiliaryFileCount;
+}
+
+function getManifestExamples(manifest) {
+	const examples = [];
+	for (const group of manifest.groups || []) {
+		if (Array.isArray(group.subgroups)) {
+			for (const subgroup of group.subgroups) {
+				examples.push(...(subgroup.examples || []));
+			}
+		} else {
+			examples.push(...(group.examples || []));
+		}
+	}
+	return examples;
+}
+
+function getSketchRelativePath(sourceFile) {
+	if (typeof sourceFile !== 'string' || !sourceFile.startsWith('examples/') || !sourceFile.endsWith('/sketch.js')) {
+		return null;
+	}
+	return sourceFile.slice('examples/'.length);
+}
+
+function getAuxiliaryFileType(filePath) {
+	const extension = path.extname(filePath).toLowerCase();
+	if (['.js', '.mjs'].includes(extension)) return 'module';
+	if (['.frag', '.glsl', '.vert', '.fs', '.vs', '.txt'].includes(extension)) return 'text';
+	return 'asset';
 }
 
 function reportProblem(message) {

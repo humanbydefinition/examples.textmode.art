@@ -94,6 +94,7 @@ function normalizeExample(
 		path,
 		title,
 		docsUrl: library ? getExampleDocsHref(library, { title }) : '',
+		files: Array.isArray(example.files) ? example.files : [],
 		group,
 		groupDescription,
 		subgroup,

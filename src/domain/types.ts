@@ -28,6 +28,12 @@ export interface LibraryRegistry {
 export interface ManifestExample {
 	title?: string;
 	sourceFile: string;
+	files?: ManifestExampleFile[];
+}
+
+export interface ManifestExampleFile {
+	path: string;
+	type?: 'module' | 'text' | 'asset';
 }
 
 export interface ManifestSubgroup {
@@ -58,6 +64,7 @@ export interface NormalizedExample {
 	path: string;
 	title: string;
 	docsUrl: string;
+	files: ManifestExampleFile[];
 	group: string;
 	groupDescription: string;
 	subgroup: string | null;
