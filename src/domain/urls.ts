@@ -12,6 +12,11 @@ export function getExampleSourceHref(library: NormalizedLibrary, examplePath: st
 	return `/${library.folder}/${examplePath}/sketch.js`;
 }
 
+export function getExampleRepositorySourceHref(library: NormalizedLibrary, examplePath: string): string {
+	const ref = library.source.ref || 'main';
+	return `https://github.com/${library.github}/blob/${ref}/examples/${examplePath}/sketch.js`;
+}
+
 export function getHashPath(): string {
 	const hash = window.location.hash.slice(1);
 	if (!hash) return '';
