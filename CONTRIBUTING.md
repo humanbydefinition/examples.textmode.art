@@ -52,6 +52,14 @@ The dev server runs at `http://localhost:5180`.
 | `npm run validate:static` | Validate synced static assets and routes |
 | `npm run check` | Run the full pre-merge gate |
 
+## Deployments
+
+The GitHub Pages workflow lives at [`.github/workflows/deploy.yml`](.github/workflows/deploy.yml).
+
+- Pushes to `main` deploy automatically.
+- Maintainers can manually redeploy from **Actions** -> `deploy` -> **Run workflow**.
+- Manual deploys are intentionally limited to the `main` branch so production deploy behavior stays consistent.
+
 ## Project conventions
 
 - `libraries.json` is the source of truth for registered libraries.

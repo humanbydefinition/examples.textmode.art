@@ -3,6 +3,7 @@ name: deploy
 on:
     push:
         branches: [main]
+    workflow_dispatch:
 
 permissions:
     contents: read
@@ -18,6 +19,12 @@ jobs:
             contents: read
             pages: write
         steps:
+            - name: Guard production deploy branch
+              if: github.ref != 'refs/heads/main'
+              run: |
+                  echo "This workflow only deploys from the main branch." >&2
+                  echo "Re-run it from Actions and choose the main branch." >&2
+                  exit 1
             - uses: actions/checkout@v7
             - uses: actions/setup-node@v6
               with:
