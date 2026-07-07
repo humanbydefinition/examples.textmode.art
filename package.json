@@ -37,6 +37,8 @@
 		"@eslint/js": "^9.39.1",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
+		"@textmode/markdownlint-config": "^0.1.1",
+		"@textmode/prettier-config": "^0.1.0",
 		"@types/node": "^24.10.1",
 		"@types/react": "^19.2.5",
 		"@types/react-dom": "^19.2.3",
@@ -52,5 +54,6 @@
 		"typescript-eslint": "^8.46.4",
 		"vite": "^7.2.4",
 		"vitest": "^4.0.8"
-	}
+	},
+	"prettier": "@textmode/prettier-config"
 }
