@@ -12,18 +12,22 @@
 		"sync:ci": "node scripts/sync-latest.mjs",
 		"postinstall": "node scripts/postinstall.mjs",
 		"dev": "vite --host --port 5180",
-		"build": "tsc --noEmit && vite build && node scripts/postbuild.mjs",
+		"build:bundle": "vite build",
+		"build:postbuild": "node scripts/postbuild.mjs",
+		"build": "npm run build:bundle && npm run build:postbuild",
 		"preview": "vite preview --host --port 4180",
-		"typecheck": "tsc --noEmit",
+		"check:types": "tsc --noEmit",
 		"lint": "eslint .",
 		"test": "vitest run",
 		"test:watch": "vitest",
 		"validate:static": "node scripts/validate-static.mjs",
 		"format": "prettier --write .",
 		"check:format": "prettier --check .",
-		"lint:md": "markdownlint-cli2",
-		"lint:md:fix": "markdownlint-cli2 --fix",
-		"check": "npm run check:format && npm run lint:md && npm run lint && npm run typecheck && npm run test && npm run build && npm run validate:static"
+		"lint:md": "markdownlint-cli2 --config package.json --configPointer /markdownlint-cli2",
+		"lint:md:fix": "markdownlint-cli2 --config package.json --configPointer /markdownlint-cli2 --fix",
+		"check:deps": "check-deps",
+		"prepare": "install-git-hooks",
+		"check": "npm run check:format && npm run check:deps && npm run lint && npm run lint:md && npm run check:types && npm run test && npm run build && npm run validate:static"
 	},
 	"dependencies": {
 		"@codemirror/lang-javascript": "^6.2.5",
@@ -34,26 +38,63 @@
 		"react-dom": "^19.2.0"
 	},
 	"devDependencies": {
-		"@eslint/js": "^9.39.1",
+		"@commitlint/cli": "^21.2.1",
+		"@testing-library/dom": "^10.4.0",
 		"@testing-library/jest-dom": "^6.9.1",
 		"@testing-library/react": "^16.3.0",
+		"@textmode/commitlint-config": "^0.1.1",
+		"@textmode/eslint-config": "^0.2.0",
 		"@textmode/markdownlint-config": "^0.1.1",
 		"@textmode/prettier-config": "^0.1.0",
+		"@textmode/tooling-scripts": "^0.3.4",
+		"@textmode/tsconfig": "^0.1.0",
+		"@textmode/vitest-config": "^0.2.0",
 		"@types/node": "^24.10.1",
 		"@types/react": "^19.2.5",
 		"@types/react-dom": "^19.2.3",
 		"@vitejs/plugin-react": "^5.1.1",
-		"eslint": "^9.39.1",
+		"eslint": "^10.6.0",
 		"eslint-plugin-jsx-a11y": "^6.10.2",
-		"globals": "^16.5.0",
-		"jsdom": "^27.2.0",
+		"globals": "^17.5.0",
+		"jsdom": "^29.1.1",
+		"lint-staged": "^16.2.1",
 		"markdownlint-cli2": "^0.22.1",
-		"markdownlint-cli2-formatter-default": "^0.0.6",
-		"prettier": "^3.8.3",
-		"typescript": "^5.9.3",
-		"typescript-eslint": "^8.46.4",
-		"vite": "^7.2.4",
-		"vitest": "^4.0.8"
+		"prettier": "^3.9.4",
+		"typescript": "^6.0.3",
+		"vite": "^8.1.3",
+		"vitest": "^4.1.10"
 	},
-	"prettier": "@textmode/prettier-config"
+	"prettier": "@textmode/prettier-config",
+	"commitlint": {
+		"extends": [
+			"@textmode/commitlint-config"
+		]
+	},
+	"lint-staged": {
+		"*": "prettier --ignore-unknown --ignore-path node_modules/@textmode/tooling-scripts/src/prettierignore --write"
+	},
+	"markdownlint-cli2": {
+		"globs": [
+			"**/*.md"
+		],
+		"ignores": [
+			"node_modules/**",
+			".sources/**",
+			"dist/**",
+			"public/**",
+			"**/CHANGELOG.md"
+		],
+		"fix": false,
+		"outputFormatters": [
+			[
+				"markdownlint-cli2-formatter-default"
+			]
+		],
+		"config": {
+			"extends": "@textmode/markdownlint-config",
+			"MD029": {
+				"style": "one"
+			}
+		}
+	}
 }

@@ -1,7 +1,8 @@
+.sources/
 api/
+coverage/
 dist/
 node_modules/
 public/
 **/*.md
-.markdownlint-cli2.jsonc
-.markdownlint.jsonc
+**/*.{frag,vert,glsl}

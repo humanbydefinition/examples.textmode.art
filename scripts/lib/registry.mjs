@@ -4,8 +4,6 @@ import { readJson } from './files.mjs';
 export const DOCS_ORIGIN = 'https://code.textmode.art';
 export const IMPRINT_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/imprint';
 export const PRIVACY_URL = 'https://legal.textmode.art/projects/examples.textmode.art/en/privacy';
-export const LANDING_PAGE_VERSION = 'portal-2';
-
 export function loadRegistry() {
 	const registry = readJson(LIBRARIES_PATH);
 	return {

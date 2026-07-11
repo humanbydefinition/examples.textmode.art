@@ -1,4 +1,0 @@
-{
-	"extends": "./node_modules/@textmode/markdownlint-config/index.jsonc",
-	"MD029": { "style": "one" }
-}

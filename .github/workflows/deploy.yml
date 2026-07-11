@@ -32,7 +32,7 @@ jobs:
                   cache: npm
             - run: npm ci --ignore-scripts # skip postinstall auto-sync; sync:ci is the strict gate
             - run: npm run sync:ci
-            - run: npm run check
+            - run: npm run build # build includes typecheck via CI gate on PRs
             - uses: actions/configure-pages@v6
             - uses: actions/upload-pages-artifact@v5
               with:
